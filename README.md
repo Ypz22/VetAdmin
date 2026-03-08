@@ -6,14 +6,14 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-database-blue)
 ![License](https://img.shields.io/badge/license-private-red)
 
-Sistema de gestión para clínicas veterinarias desarrollado con tecnologías modernas de frontend y backend.
-La plataforma permite administrar pacientes, citas, servicios veterinarios y clientes desde una interfaz moderna e intuitiva.
+VetAdmin is a veterinary clinic management system built with modern frontend and backend technologies.
+The platform allows clinics to manage patients, appointments, veterinary services, and clients through a modern and intuitive interface.
 
-VetAdmin está diseñado para optimizar la gestión administrativa de clínicas veterinarias y mejorar la eficiencia en el cuidado animal.
+VetAdmin is designed to optimize administrative workflows in veterinary clinics and improve operational efficiency in animal care.
 
 ---
 
-## Tecnologías Utilizadas
+## Technologies Used
 
 ### Frontend
 
@@ -24,7 +24,7 @@ VetAdmin está diseñado para optimizar la gestión administrativa de clínicas 
 - Radix UI
 - Lucide React
 - React Hot Toast
-- CSS Modular
+- Modular CSS
 
 ### Backend
 
@@ -34,123 +34,123 @@ VetAdmin está diseñado para optimizar la gestión administrativa de clínicas 
 
 ---
 
-## Características
+## Features
 
-- Gestión de pacientes
-- Gestión de clientes
-- Sistema de citas veterinarias
-- Panel administrativo
-- Interfaz moderna y responsiva
-- Manejo eficiente de estados con React Query
-- Arquitectura modular escalable
+- Patient management
+- Client management
+- Veterinary appointment scheduling
+- Administrative dashboard
+- Modern and responsive interface
+- Efficient server state management with React Query
+- Modular and scalable architecture
 
 ---
 
-## Acceso de prueba
+## Test Access
 
-Para probar la plataforma puedes usar las siguientes credenciales:
+To explore the platform features you can use the following demo credentials.
 
 Email
 
 vettest@mail.com
 
-Contraseña
+Password
 
 Hola_123
 
 ---
 
-## Instalación
+## Installation
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 git clone https://github.com/Ypz22/VetAdmin.git
 cd VetAdmin
 
-### 2. Instalar dependencias
+### 2. Install dependencies
 
 npm install
 
-### 3. Configurar variables de entorno
+### 3. Configure environment variables
 
-Crear archivo .env
+Create a .env file in the project root.
 
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_key
 
-### 4. Ejecutar el proyecto
+### 4. Run the project
 
 npm run dev
 
 ---
 
-## Scripts disponibles
+## Available Scripts
 
-Ejecutar servidor de desarrollo
+Run development server
 
 npm run dev
 
-Construir versión de producción
+Build production version
 
 npm run build
 
-Previsualizar build
+Preview production build
 
 npm run preview
 
 ---
 
-## Estructura del Proyecto
+## Project Structure
 
 src
  ├── api
- │   └── llamadas directas a Supabase
+ │   └── direct requests to Supabase services
  │
  ├── components
- │   └── componentes reutilizables
+ │   └── reusable UI components
  │
  ├── config
- │   └── configuración de Supabase
+ │   └── service configuration (Supabase client)
  │
  ├── hooks
- │   └── custom hooks de React
+ │   └── custom React hooks
  │
  ├── pages
- │   └── páginas principales de la aplicación
+ │   └── main application pages
  │
  ├── queries
- │   └── hooks de TanStack Query
+ │   └── TanStack Query hooks implementation
  │
  ├── styles
- │   └── estilos globales
+ │   └── global and component styles
  │
  └── utils
-     └── funciones auxiliares
+     └── helper functions and utilities
 
 ---
 
-## Arquitectura
+## Architecture
 
-VetAdmin utiliza una arquitectura basada en:
+VetAdmin follows a modular architecture built with:
 
-React para la interfaz  
-Supabase como backend BaaS  
-TanStack Query para manejo de datos remotos  
-Componentes desacoplados y reutilizables  
+React for the user interface  
+Supabase as Backend-as-a-Service  
+TanStack Query for server state management  
+Reusable and decoupled components  
 
-Esto permite mantener el código modular y escalable.
+This approach keeps the application scalable and maintainable.
 
 ---
 
 ## Roadmap
 
-Futuras mejoras del sistema
+Future improvements planned for the system
 
-Dashboard con métricas  
-Sistema de notificaciones  
-Historial médico completo  
-Gestión de inventario veterinario  
-Soporte multi clínica  
+Analytics dashboard with metrics  
+Notification system  
+Complete medical history records  
+Veterinary inventory management  
+Multi-clinic support
 
 ---
 
@@ -166,13 +166,13 @@ Soporte multi clínica
 
 ---
 
-## Autor
+## Author
 
 Jefferson Yepez  
-Estudiante de Ingeniería en Software
+Software Engineering Student
 
 ---
 
-## Licencia
+## License
 
-Este proyecto es privado y no está disponible para distribución pública.
+This project is private and not available for public distribution.
