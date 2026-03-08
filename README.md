@@ -1,6 +1,12 @@
 # VetAdmin
 
-Sistema de gestión para clínicas veterinarias desarrollado con tecnologías modernas de frontend y backend.  
+![React](https://img.shields.io/badge/React-19-blue)
+![Vite](https://img.shields.io/badge/Vite-fast-purple)
+![Supabase](https://img.shields.io/badge/Supabase-backend-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-database-blue)
+![License](https://img.shields.io/badge/license-private-red)
+
+Sistema de gestión para clínicas veterinarias desarrollado con tecnologías modernas de frontend y backend.
 La plataforma permite administrar pacientes, citas, servicios veterinarios y clientes desde una interfaz moderna e intuitiva.
 
 VetAdmin está diseñado para optimizar la gestión administrativa de clínicas veterinarias y mejorar la eficiencia en el cuidado animal.
@@ -46,60 +52,56 @@ Para probar la plataforma puedes usar las siguientes credenciales:
 
 Email
 
-```
 vettest@mail.com
-```
 
 Contraseña
 
-```
 Hola_123
-```
 
 ---
 
 ## Instalación
 
-Clonar el repositorio
+### 1. Clonar el repositorio
 
-```
 git clone https://github.com/Ypz22/VetAdmin.git
 cd VetAdmin
-```
 
-Instalar dependencias
+### 2. Instalar dependencias
 
-```
 npm install
-```
 
-Configurar variables de entorno
+### 3. Configurar variables de entorno
 
 Crear archivo .env
-```
+
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_key
-```
 
-Ejecutar el proyecto
-```
+### 4. Ejecutar el proyecto
+
 npm run dev
-Scripts disponibles
-```
+
+---
+
+## Scripts disponibles
+
 Ejecutar servidor de desarrollo
-```
-npm run dev
-```
-Construir versión de producción
-```
-npm run build
-```
-Previsualizar build
-```
-npm run preview
-```
 
-Estructura del Proyecto
+npm run dev
+
+Construir versión de producción
+
+npm run build
+
+Previsualizar build
+
+npm run preview
+
+---
+
+## Estructura del Proyecto
+
 src
  ├── api
  │   └── llamadas directas a Supabase
@@ -124,48 +126,33 @@ src
  │
  └── utils
      └── funciones auxiliares
-Arquitectura
+
+---
+
+## Arquitectura
 
 VetAdmin utiliza una arquitectura basada en:
 
-React para la interfaz
-
-Supabase como backend BaaS
-
-TanStack Query para manejo de datos remotos
-
-Componentes desacoplados y reutilizables
+React para la interfaz  
+Supabase como backend BaaS  
+TanStack Query para manejo de datos remotos  
+Componentes desacoplados y reutilizables  
 
 Esto permite mantener el código modular y escalable.
 
-Roadmap
+---
+
+## Roadmap
 
 Futuras mejoras del sistema
 
-Dashboard con métricas
+Dashboard con métricas  
+Sistema de notificaciones  
+Historial médico completo  
+Gestión de inventario veterinario  
+Soporte multi clínica  
 
-Sistema de notificaciones
-
-Historial médico completo
-
-Gestión de inventario veterinario
-
-Soporte multi clínica
-
-Autor
-
-Jefferson Yepez
-Estudiante de Ingeniería en Software
-
-Licencia
-
-Este proyecto es privado y no está disponible para distribución pública.
-
-![React](https://img.shields.io/badge/React-19-blue)
-![Vite](https://img.shields.io/badge/Vite-fast-purple)
-![Supabase](https://img.shields.io/badge/Supabase-backend-green)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-database-blue)
-![License](https://img.shields.io/badge/license-private-red)
+---
 
 ## Preview
 
@@ -176,3 +163,16 @@ Este proyecto es privado y no está disponible para distribución pública.
 ### Patients
 
 ![patients](public/readme/patients.png)
+
+---
+
+## Autor
+
+Jefferson Yepez  
+Estudiante de Ingeniería en Software
+
+---
+
+## Licencia
+
+Este proyecto es privado y no está disponible para distribución pública.
