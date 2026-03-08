@@ -9,7 +9,7 @@ import NewPatient from "./newpatient/NewPatient";
 import toast from "react-hot-toast";
 import { useCreateClient } from "../../queries/clients.queries";
 import { toCapitalizeCase } from "../../utils/stringUtils.js";
-import NewAppointment from "./newAppointment/Newappointment";
+import NewAppointment from "./newappointment/Newappointment";
 import { useCreateAppointment } from "../../queries/appointments.queries";
 import { useServices } from "../../queries/services.queries";
 import { toTitleCase } from "../../utils/stringUtils";
