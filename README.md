@@ -102,6 +102,7 @@ npm run preview
 
 ## Project Structure
 
+```
 src
  ├── api
  │   └── direct requests to Supabase services
@@ -126,7 +127,7 @@ src
  │
  └── utils
      └── helper functions and utilities
-
+```
 ---
 
 ## Architecture
