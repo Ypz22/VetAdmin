@@ -22,8 +22,7 @@ import {
 import { Textarea } from "../../components/Textarea.jsx";
 import Button from "../../components/Button";
 import { getSpeciesColor } from "../../utils/randomColor";
-import "./newAppointmentGeneral.css";
-
+import "./newAppointmentgeneral.css";
 const NewAppointmentGeneral = ({
     newAppointmentOpen,
     setNewAppointmentOpen,
