@@ -1,0 +1,349 @@
+.agenda {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.agendaHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.agendaHeaderTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.agendaHeaderTitle h1 {
+    font-size: 1.5rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.agendaHeaderTitle p {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.agendaHeaderButtons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.agendaFilterButton {
+    color: var(--text-color-secondary);
+    background-color: transparent;
+    border: 1px solid var(--black-shadows-border);
+}
+
+.agendaFilterButton .icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+}
+
+.agendaFilterButton:hover {
+    background-color: var(--light-taupe);
+    border-color: var(--light-taupe);
+    color: var(--white-color);
+}
+
+.agendaNewAppointmentButton {
+    background-color: var(--light-taupe);
+    color: var(--white-color);
+    border: none;
+}
+
+.agendaNewAppointmentButton:hover {
+    background-color: var(--taupe);
+}
+
+.agendaWeekdays {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+}
+
+.btnAgendaWeekdays {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.btnSelected {
+    background-color: rgba(var(--orange-rgb), 0.1);
+    border: 1px solid var(--orange);
+    color: var(--orange);
+}
+
+.btnDisable {
+    background-color: var(--white-color);
+    border: 1px solid var(--black-shadows-border);
+    color: var(--text-color-secondary);
+}
+
+.btnAgendaDay {
+    font-size: 0.750rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.btnAgendaDate {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.btnAgendaDateSelected {
+    color: var(--orange);
+}
+
+.btnAgendaDateDisable {
+    color: var(--black-color);
+}
+
+.btnAgendaWeekdays .today {
+    background-color: var(--orange);
+    border-radius: 9999px;
+    width: 0.375rem;
+    height: 0.375rem;
+}
+
+.btnAgendaCount {
+    font-size: 0.750rem;
+    font-weight: 100;
+}
+
+.agendaContent {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr;
+    gap: 1.5rem;
+}
+
+.agendaStatsCards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.agendaStatsCard {
+    border-radius: 12px;
+}
+
+.agendaStatsCardContent {
+    padding: 1.25rem;
+}
+
+.agendaStatsCardContent .total {
+    font-size: 0.875rem;
+}
+
+.agendaStatsCardContent .countTotal {
+    margin-top: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--black-color);
+}
+
+.agendaStatsCardContent .countComplete {
+    margin-top: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.agendaStatsCardContent .countPending {
+    margin-top: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--yellow);
+}
+
+.agendaAppointmentsCard {
+    border-radius: 12px;
+}
+
+.agendaAppointmentsCardHeader {
+    padding-bottom: 0.75rem;
+}
+
+.agendaAppointmentsCardTitle {
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.agendaAppointmentsCardContent {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.agendaNoAppointments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.agendaNoAppointmentsIcon {
+    padding: 1rem;
+    background-color: var(--button-hover-color);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    color: var(--text-color-secondary);
+}
+
+.agendaNoAppointments p {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.agendaAppointmentsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.btnAgendaAppointment {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--black-shadows);
+    text-align: left;
+    transition: all 0.2s ease;
+    border-left: 4px solid hsl(var(--muted-foreground));
+}
+
+.agendaAppointmentCompleted {
+    opacity: 0.6;
+}
+
+.agendaAppointmentMain {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.agendaAppointmentTime {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+}
+
+.agendaAppointmentTime .time {
+    font-size: 0.875rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.agendaAppointmentTime .duration {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+}
+
+.agendaAppointmentAvatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: var(--button-hover-color);
+    border-radius: 9999px;
+    color: var(--midnight-green);
+    font-size: 0.75rem;
+}
+
+.agendaAppointmentPetOwner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.agendaAppointmentPetOwner .pet {
+    font-size: 0.875rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.agendaAppointmentPetOwner .owner {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+}
+
+.agendaAppointmentRoom {
+    display: flex;
+    align-items: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+}
+
+.agendaAppointmentRoom .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+
+.type-vacunacion {
+    border-left: 4px solid var(--green-color);
+}
+
+.type-revision-general {
+    border-left: 4px solid var(--orange);
+}
+
+.type-cirugia-menor {
+    border-left: 4px solid var(--danger);
+}
+
+.type-cirugia {
+    border-left: 4px solid var(--danger);
+}
+
+.type-desparasitacion {
+    border-left: 4px solid var(--accent);
+}
+
+.type-control {
+    border-left: 4px solid var(--midnight-green);
+}
+
+.agendaAppointmentDetails {
+    border-top: 1px solid var(--black-shadows-border);
+    padding: 0 1rem;
+    padding-bottom: 1rem;
+    padding-top: 0.75rem;
+}
+
+.agendaAppointmentDetailsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.agendaAppointmentDetailsType {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.agendaAppointmentNotes {
+    margin-top: 0.5rem;
+    background-color: var(--button-hover-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}

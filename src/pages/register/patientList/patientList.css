@@ -1,0 +1,484 @@
+.status-activo {
+    background-color: rgba(var(--accent-rgb), 0.1);
+    color: var(--accent);
+    border-color: rgba(var(--accent-rgb), 0.2);
+}
+
+.status-en-tratamiento {
+    background-color: rgba(var(--orange-rgb), 0.1);
+    color: var(--orange);
+    border-color: rgba(var(--orange-rgb), 0.2);
+}
+
+.status-alta {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    border-color: rgba(var(--border-rgb), 0.3);
+}
+
+
+.patientList {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+    gap: 1.5rem;
+}
+
+.patientListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.patientListEmptyState {
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+}
+
+.patientListEmptyStateContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .75rem;
+    padding: 4rem 0;
+}
+
+.patientListEmptyStateIcon {
+    padding: 1rem;
+    border-radius: 9999px;
+    background-color: var(--button-hover-color);
+    display: flex;
+    align-items: center;
+}
+
+.patientListEmptyStateP {
+    font-size: .875rem;
+    color: var(--black-color);
+}
+
+.patientButton {
+    width: 100%;
+    border-radius: 16px;
+    background-color: var(--white-color);
+    border: 1px solid var(--black-shadows-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.patientButton:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.patientButtonSelected {
+    border-color: var(--light-taupe);
+}
+
+.patientItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.patientIcon {
+    border-radius: 12px;
+    padding: 0.625rem;
+    display: flex;
+    align-items: center;
+}
+
+.patientInfo {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.patientInfoHeader {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.patientInfoHeaders p {
+    font-size: 1rem;
+    color: var(--black-color);
+}
+
+.badge-status {
+    text-transform: capitalize;
+}
+
+.patientInfoHeader span {
+    font-size: .750rem;
+    color: var(--text-color-secondary);
+}
+
+.patientInfoSub {
+    display: flex;
+    font-size: .875rem;
+    color: var(--text-color-secondary);
+}
+
+.patientOwner {
+    min-width: 0;
+    flex-direction: column;
+    overflow: hidden;
+    justify-items: end;
+}
+
+.patientAvatar {
+    height: 1.75rem;
+    width: 1.75rem;
+    background-color: var(--button-hover-color);
+}
+
+.patientAvatarFallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    font-size: .650rem;
+    color: var(--midnight-green);
+}
+
+.patientOwnerSpan {
+    font-size: .750rem;
+    color: var(--text-color-secondary);
+    padding: .25rem 0.25rem;
+}
+
+.patientChevronRightActive {
+    transition: all 0.2s ease;
+    color: var(--light-taupe);
+}
+
+.patientDetails {
+    border: 1px solid var(--black-shadows-border);
+    border-radius: 16px;
+    background-color: var(--white-color);
+}
+
+.patientDetailsHeaderContainer {
+    padding-bottom: .75rem;
+}
+
+.patientDetailsHeaderContent {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.patientDetailsHeader {
+    border-radius: 12px;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.patientDetailsHeaderIcon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.patientDetailsHeaderText {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.patientDetailsTitle {
+    font-size: 1.25rem;
+    color: var(--black-color);
+}
+
+.patientDetailsSub {
+    font-size: .875rem;
+    color: var(--text-color-secondary);
+}
+
+.patientDetailsContent {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.patientDetailsInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.patientDetailsBadge {
+    width: fit-content;
+    font-size: 0.750rem;
+    text-transform: capitalize;
+}
+
+.detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    align-items: start;
+}
+
+.detailLabel {
+    font-size: .875rem;
+    color: var(--text-color-secondary);
+}
+
+.detailValue {
+    font-size: .875rem;
+    color: var(--black-color);
+}
+
+.patientDetailsInfoItem {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--black-shadows-border);
+    margin: 0rem 0;
+}
+
+.patientDetailsOwner {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+}
+
+.patientDetailsOwnerP {
+    font-size: .750rem;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+}
+
+.patientDetailsOwnerInfo {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.patientDetailsOwnerAvatar {
+    height: 2rem;
+    width: 2rem;
+    background-color: var(--button-hover-color);
+}
+
+.patientDetailsOwnerAvatarFallback {
+    color: var(--midnight-green);
+    background-color: var(--button-hover-color);
+    font-size: 0.650rem;
+}
+
+.patientDetailsOwnerText {
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
+}
+
+
+.patientDetailsOwnerName {
+    font-size: 0.875rem;
+    color: var(--black-color);
+}
+
+.patientDetailsOwnerSub {
+    font-size: .750rem;
+    color: var(--text-color-secondary);
+}
+
+.patientDetailsActions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.addPatientButton {
+    background-color: var(--light-taupe);
+    border: none;
+    color: var(--white-color);
+}
+
+.addPatientButton:hover {
+    background-color: var(--taupe);
+}
+
+.historyPatientButton {
+    background-color: var(--black-shadows);
+    border: 1px solid var(--black-shadows-border);
+    color: var(--text-color-secondary);
+}
+
+.historyPatientButton:hover {
+    background-color: var(--light-taupe);
+    color: var(--white-color);
+}
+
+.patientDetailsEmptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .75rem;
+    padding: 3rem 0;
+}
+
+.patientDetailsEmptyStateIcon {
+    padding: 1rem;
+    border-radius: 9999px;
+    background-color: var(--button-hover-color);
+    display: flex;
+    align-items: center;
+    color: var(--text-color-secondary);
+}
+
+.patientDetailsEmptyStateP {
+    font-size: 1rem;
+    color: var(--black-color);
+}
+
+.patientDetailsEmptyStateSubP {
+    font-size: .875rem;
+    color: var(--text-color-secondary);
+}
+
+.patientDetailsHeaderActions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.patientDetailsHeaderActions button {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    padding: 0.5rem;
+    color: var(--text-color-secondary);
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.patientDetailsHeaderActions .editPatientButton:hover {
+    color: var(--midnight-green);
+    background-color: var(--button-hover-color);
+    border-radius: 8px;
+}
+
+.patientDetailsHeaderActions .deletePatientButton:hover {
+    color: var(--danger);
+    background-color: rgba(var(--danger-rgb), 0.1);
+    border-radius: 8px;
+}
+
+.deletePatientHeaderRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.deletePatientAlertIconWrap {
+    border-radius: 12px;
+    color: var(--danger);
+    background-color: rgba(var(--danger-rgb), 0.1);
+    padding: 0.625rem;
+    display: flex;
+    align-items: center;
+}
+
+.deletePatientHeaderText {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.deletePatientDialogTitle {
+    font-size: 1.25rem;
+    color: var(--black-color);
+}
+
+.deletePatientBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.deletePatientPatientCard {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid var(--black-shadows-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    background-color: var(--black-shadows);
+}
+
+.deletePatientSpeciesIconWrap {
+    padding: 0.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.deletePatientPatientInfo {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.deletePatientPatientName {
+    font-size: .875rem;
+    color: var(--black-color);
+}
+
+.deletePatientPatientMeta {
+    font-size: .750rem;
+    color: var(--text-color-secondary);
+}
+
+.deletePatientWarningText {
+    font-size: .875rem;
+    color: var(--text-color-secondary);
+    line-height: 1.5;
+}
+
+.deletePatientEmphasis {
+    font-size: .875rem;
+    color: var(--black-color);
+    font-weight: 100;
+}
+
+.deletePatientDialogFooter {
+    gap: 0.5rem;
+}
+
+.deletePatientBtnCancel {
+    background-color: var(--black-shadows);
+    border: 1px solid var(--black-shadows-border);
+    color: var(--text-color-secondary);
+}
+
+.deletePatientBtnCancel:hover {
+    background-color: var(--light-taupe);
+    color: var(--white-color);
+}
+
+.deletePatientBtnDelete {
+    background-color: var(--danger);
+    border: none;
+    color: var(--white-color);
+}
+
+.deletePatientBtnDelete:hover {
+    background-color: rgba(var(--danger-rgb), 0.8);
+}

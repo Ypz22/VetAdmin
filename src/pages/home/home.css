@@ -1,0 +1,191 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--black-shadows);
+}
+
+
+/* Banner */
+.welcomeBanner {
+    background:
+        linear-gradient(rgba(5, 61, 88, 0.90),
+            rgba(5, 61, 88, 0.90)),
+        url("/src/assets/images/VetHero.jpg");
+
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    border-radius: 16px;
+    position: relative;
+}
+
+.welcomeBanner .welcomeBanner-container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.welcomeBanner .welcomeBanner-text h2 {
+    color: var(--text-color-primary);
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.welcomeBanner .welcomeBanner-text p {
+    margin-top: 0.25rem;
+    color: var(--text-color-secondary);
+    font-size: 1rem;
+}
+
+.welcomeBanner-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+
+.welcomeBanner-buttons .buttonNewAppointment {
+    display: flex;
+    background-color: var(--light-taupe);
+    color: var(--text-color-primary);
+    height: 2.5rem;
+    padding: .5rem 1rem;
+    border: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.welcomeBanner-buttons .buttonNewAppointment:hover {
+    background-color: var(--taupe);
+}
+
+.welcomeCalendarPlusIcon {
+    height: 1rem;
+    width: 1rem;
+}
+
+.welcomeBanner-buttons .buttonSearchPatient {
+    display: flex;
+    background-color: transparent;
+    color: var(--text-color-primary);
+    height: 2.5rem;
+    padding: .5rem 1rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--text-color-secondary);
+}
+
+.welcomeBanner-buttons .buttonSearchPatient:hover {
+    background-color: var(--button-hover-color);
+    color: var(--white-color);
+}
+
+.welcomeSearchIcon {
+    height: 1rem;
+    width: 1rem;
+}
+
+.menuDashboardSearch {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+}
+
+.menuDashboardSearchIcon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.menuDashboardSearchInput {
+    padding-left: 36px;
+}
+
+.searchDropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+
+.searchDropdownHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.searchSpinner {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.searchDropdownBody {
+    max-height: 280px;
+    overflow: auto;
+}
+
+.searchItem {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.searchItem:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.searchItemMain {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: baseline;
+}
+
+.searchItemLabel {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.searchItemType {
+    font-size: 12px;
+    opacity: 0.65;
+    white-space: nowrap;
+}
+
+.searchItemMeta {
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.searchEmpty {
+    padding: 16px 12px;
+    text-align: center;
+}
+
+.searchEmptyTitle {
+    margin: 0;
+    font-weight: 700;
+}
+
+.searchEmptySub {
+    margin: 6px 0 0;
+    font-size: 12px;
+    opacity: 0.7;
+}

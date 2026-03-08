@@ -1,0 +1,105 @@
+.billingPage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.currentPlanHeader {
+    padding-bottom: 0.75rem;
+}
+
+.currentPlanHeaderTitle {
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.currentPlanContent {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.currentPlanInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem;
+    background-color: var(--light-orange-color);
+    border: 1px solid rgba(var(--orange-rgb), 0.5);
+    border-radius: 8px;
+}
+
+.currentPlanInfoDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.currentPlanInfoName {
+    font-size: 1rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.currentPlanInfoDate {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.currentPlanInfoPrice p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--light-taupe);
+}
+
+.currentPlanInfoPrice span {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+}
+
+.paymentHistoryHeader {
+    padding-bottom: 0.75rem;
+}
+
+.paymentHistoryHeaderTitle {
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.paymentHistoryContent {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.paymentHistoryList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.paymentRecord {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: var(--black-shadows);
+    border-radius: 12px;
+    color: var(--black-color);
+    font-size: 0.875rem;
+}
+
+.paymentRecordSpan {
+    font-weight: 100;
+}
+
+.paymentRecordDetails {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.paymentRecordDetails span {
+    font-weight: 500;
+}

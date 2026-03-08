@@ -1,0 +1,141 @@
+.full-page {
+    background: url('/src/assets/images/BackgroundLogin.png') no-repeat center center;
+    background-size: cover;
+}
+
+.login-form-section {
+    flex: 1;
+    flex-direction: column;
+}
+
+.login-form {
+    background:
+        linear-gradient(rgba(5, 61, 88, 0.97),
+            rgba(5, 61, 88, 0.97)),
+        url("/src/assets/images/BackgroundFormLogin.png");
+
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 3rem;
+    border-radius: 20px;
+    width: 55%;
+}
+
+.login-form .button-container {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.login-form input,
+button {
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+.login-form input {
+    width: 100%;
+    border: 2px solid transparent;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.login-form input:focus {
+    border: 2px solid var(--light-taupe);
+}
+
+.login-form input:hover {
+    border: 2px solid var(--light-taupe);
+}
+
+.login-form input::placeholder {
+    color: var(--light-taupe);
+}
+
+.login-form button {
+    width: 70%;
+    background-color: transparent;
+    border-color: var(--light-taupe);
+    color: var(--white-color);
+    border-style: solid;
+    padding: 1.1rem;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: var(--light-taupe);
+    border-color: var(--light-taupe);
+}
+
+.login-form .remember-label {
+    display: flex;
+    color: var(--white-color);
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    justify-content: center;
+
+}
+
+.login-form .remember-label input {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid var(--light-taupe);
+    width: auto;
+    margin: 0;
+    padding: 0.5rem;
+    cursor: pointer;
+
+}
+
+.login-form .remember-label input:checked {
+    background-color: var(--light-taupe);
+    border-color: var(--light-taupe);
+}
+
+.login-form .remember-label input:hover {
+    border-color: var(--taupe);
+}
+
+.login-form-section .img {
+    width: 50%;
+    height: 200px;
+    position: relative;
+    top: 60px;
+    background: url('/src/assets/images/DogFormLogin.png') no-repeat center center;
+    background-size: contain;
+    z-index: 10;
+}
+
+
+/* login image section */
+
+.login-img-section {
+    flex: 1;
+    width: 100%;
+    height: 100vh;
+    background: url('/src/assets/images/LoginImage.png') no-repeat center center;
+    background-size: cover;
+}
+
+.login-img-section h2 {
+    color: var(--midnight-green);
+    font-size: 7rem;
+    text-align: end;
+    margin-top: 2rem;
+    line-height: 5rem;
+}
+
+.login-img-section .label-vet-login {
+    text-align: end;
+    position: relative;
+    left: 280px;
+    font-size: 6rem;
+}

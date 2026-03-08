@@ -1,0 +1,46 @@
+.registerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.registerHeader-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.registerHeader-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--black-color);
+}
+
+.registerHeader-text p {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.buttonNewPatient {
+    background-color: var(--light-taupe);
+    border: none;
+    height: 2.5rem;
+    padding: .5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    color: var(--white-color);
+}
+
+.buttonNewPatient:hover {
+    background-color: var(--taupe);
+}
+
+.registerHeaderIcon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: .5rem;
+}

@@ -1,0 +1,141 @@
+.statsCards-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.statsCard {
+    border: 1px solid rgba(var(--border-rgb), 0.6);
+    background-color: var(--white-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.statsCard:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statsCardContent {
+    padding: 1.25rem;
+}
+
+.statsCardIcon {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.statsCardInfo .label {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.statsCardInfo .value {
+    margin-top: .5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--black-color);
+}
+
+.statsCardChangeSpan {
+    margin-top: .5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    border-radius: 999px;
+    padding: .125rem .5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--green-color);
+    background-color: var(--light-green-color);
+}
+
+.statsCardChangeIcon {
+    height: 0.75rem;
+    width: 0.75rem;
+}
+
+.statsCardIconWrapper {
+    border-radius: 16px;
+    padding: .75rem;
+}
+
+.statsCardIconWrapper .icon {
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+
+.statsCardIconWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+}
+
+.icon {
+    width: 22px;
+    height: 22px;
+}
+
+.statsCards-container .statsCard:nth-child(6n+1) .statsCardIconWrapper {
+    background-color: rgba(255, 122, 48, 0.12);
+}
+
+.statsCards-container .statsCard:nth-child(6n+1) .icon {
+    color: rgb(255, 122, 48);
+}
+
+.statsCards-container .statsCard:nth-child(6n+2) .statsCardIconWrapper {
+    background-color: rgba(70, 92, 136, 0.12);
+}
+
+.statsCards-container .statsCard:nth-child(6n+2) .icon {
+    color: rgb(70, 92, 136);
+}
+
+.statsCards-container .statsCard:nth-child(6n+3) .statsCardIconWrapper {
+    background-color: rgba(34, 197, 94, 0.12);
+}
+
+.statsCards-container .statsCard:nth-child(6n+3) .icon {
+    color: rgb(34, 197, 94);
+}
+
+.statsCards-container .statsCard:nth-child(6n+4) .statsCardIconWrapper {
+    background-color: rgba(168, 85, 247, 0.12);
+}
+
+.statsCards-container .statsCard:nth-child(6n+4) .icon {
+    color: rgb(168, 85, 247);
+}
+
+.statsCards-container .statsCard:nth-child(6n+5) .statsCardIconWrapper {
+    background-color: rgba(244, 63, 94, 0.12);
+}
+
+.statsCards-container .statsCard:nth-child(6n+5) .icon {
+    color: rgb(244, 63, 94);
+}
+
+.statsCards-container .statsCard:nth-child(6n) .statsCardIconWrapper {
+    background-color: rgba(6, 182, 212, 0.12);
+}
+
+.statsCards-container .statsCard:nth-child(6n) .icon {
+    color: rgb(6, 182, 212);
+}
+
+@media (max-width: 768px) {
+    .statsCards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .statsCards-container {
+        grid-template-columns: 1fr;
+    }
+}

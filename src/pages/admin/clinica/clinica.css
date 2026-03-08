@@ -1,0 +1,120 @@
+.clinica {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.clinica-info-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+}
+
+.clinica-info-title {
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.btn-clinica {
+    background-color: transparent;
+    color: var(--text-color-secondary);
+    transition: all 0.2s ease;
+    border-radius: 8px;
+}
+
+.icon-header-clinica {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.btn-clinica:hover {
+    background-color: var(--light-taupe);
+    color: var(--text-color-primary);
+}
+
+.clinica-info-content {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.clinica-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.clinica-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.clinica-label {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.input-clinica {
+    padding: 0.5rem 0.75rem 0.5rem 0.75rem !important;
+    color: var(--black-color) !important;
+    background-color: var(--black-shadows) !important;
+}
+
+.clinica-schedule-header {
+    padding-bottom: 0.75rem;
+}
+
+.clinica-schedule-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.clinica-schedule-title .icon {
+    color: var(--light-taupe);
+}
+
+.clinica-schedule-content {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.clinica-schedule-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.clinica-schedule-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--black-shadows);
+    padding: 0.75rem 1rem;
+}
+
+.clinica-schedule-day {
+    color: var(--black-color);
+    font-size: 0.875rem;
+    font-weight: 100;
+}
+
+.scheduelNormal {
+    font-size: 0.875rem;
+}
+
+.scheduleOpen {
+    font-size: 0.875rem;
+    color: var(--accent);
+}
+
+.scheduleClose {
+    font-size: 0.875rem;
+    color: var(--danger);
+}

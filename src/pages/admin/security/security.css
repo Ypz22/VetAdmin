@@ -1,0 +1,94 @@
+.securityPage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.securityHeader {
+    padding-bottom: 0.75rem;
+}
+
+.securityHeaderTitle {
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.securityHeaderTitle .icon {
+    color: var(--light-taupe);
+}
+
+.securityContent {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.securityForm {
+    display: flex;
+    flex-direction: column;
+    max-width: 28rem;
+    gap: 1rem;
+}
+
+.securityFormGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inputSecurity {
+    padding-left: 0.75rem;
+    border-radius: 10px;
+    background-color: var(--black-shadows);
+}
+
+.btn-security {
+    background-color: var(--light-taupe);
+    color: var(--text-color-primary);
+    width: fit-content;
+}
+
+.btn-security:hover {
+    background-color: var(--taupe);
+}
+
+.sessionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.sessionRecord {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: var(--black-shadows);
+    border-radius: 12px;
+    color: var(--black-color);
+    font-size: 0.875rem;
+}
+
+.sessionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.sessionRecordP {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.btnSecurityLogout {
+    background-color: transparent;
+    color: var(--danger);
+    font-size: 0.750rem;
+}
+
+.btnSecurityLogout:hover {
+    background-color: rgba(var(--danger-rgb), 0.1);
+}

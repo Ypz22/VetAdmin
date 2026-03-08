@@ -1,0 +1,106 @@
+.team-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+}
+
+.team-title {
+    font-size: 1.25rem;
+    font-weight: semibold;
+    color: var(--black-color);
+}
+
+.btn-team {
+    background-color: var(--light-taupe);
+    color: var(--white-color);
+    transition: all 0.2s ease;
+}
+
+.btn-team:hover {
+    background-color: var(--taupe);
+    color: var(--white-color);
+}
+
+.btn-team .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.team-content {
+    padding: 0 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.team-members {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.teamMember {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: var(--black-shadows);
+    border: 1px solid var(--black-shadows-border);
+    opacity: 0.8;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.teamMemberInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.teamMemberAvatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--button-hover-color);
+    color: var(--midnight-green);
+}
+
+.teamMemberFallback {
+    font-size: 0.750rem;
+}
+
+.teamMemberDetails {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.teamMemberDetails .name {
+    font-size: 1rem;
+    color: var(--black-color);
+}
+
+.teamMemberDetails .role {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.teamMemberStatus {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    gap: 0.5rem;
+}
+
+.badgeActive {
+    background-color: rgba(var(--accent-rgb), 0.1);
+    color: var(--accent);
+    border-color: rgba(var(--accent-rgb), 0.2);
+}
+
+.badgeInactive {
+    background-color: var(--black-shadows-border);
+    color: var(--text-color-secondary);
+}

@@ -1,0 +1,74 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    outline: none;
+}
+
+.badge-default {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.badge-default:hover {
+    background-color: rgba(var(--primary-rgb), 0.8);
+}
+
+.badge-secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+}
+
+.badge-secondary:hover {
+    background-color: rgba(var(--secondary-rgb), 0.8);
+}
+
+.badge-destructive {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+}
+
+.badge-destructive:hover {
+    background-color: rgba(var(--destructive-rgb), 0.8);
+}
+
+.badge-outline {
+    background-color: transparent;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+}
+
+.confirmed {
+    background-color: var(--light-green-color);
+    color: var(--green-color);
+    border: 1px solid var(--green-color);
+}
+
+.confirmed:hover {
+    background-color: rgba(var(--green-rgb), 0.15);
+}
+
+.pending {
+    background-color: var(--light-yellow-color);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+}
+
+.pending:hover {
+    background-color: rgba(var(--yellow-rgb), 0.15);
+}
+
+.cancelled {
+    background-color: var(--light-orange-color);
+    color: var(--orange);
+    border: 1px solid var(--orange);
+}
+
+.cancelleds:hover {
+    background-color: rgba(var(--orange-rgb), 0.15);
+}

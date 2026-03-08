@@ -1,0 +1,66 @@
+.admin {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin .admin-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.admin .admin-header h1 {
+    font-size: 1.75rem;
+    margin: 0;
+}
+
+.admin .admin-header p {
+    font-size: 1rem;
+    color: var(--text-color-secondary);
+}
+
+.admin .admin-content {
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr;
+    gap: 1.5rem;
+}
+
+.admin-tabs {
+    background-color: var(--white-color);
+    border: 1px solid var(--black-shadows-border);
+}
+
+.admin-tabs-content {
+    padding: 0.75rem;
+}
+
+.admin-tabs-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow-x: auto;
+}
+
+.btn-tabs-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+    border-radius: 12px;
+    border: none;
+    padding: 0.625rem 0.75rem;
+    background-color: transparent;
+    color: var(--text-color-secondary);
+    justify-content: flex-start;
+    font-size: 0.875rem;
+}
+
+.btn-tabs-nav:hover {
+    background-color: var(--black-shadows-border);
+    color: var(--midnight-green);
+}
+
+.btn-active-tab {
+    background-color: var(--midnight-green);
+    color: var(--white-color);
+}

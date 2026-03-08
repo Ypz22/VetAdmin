@@ -1,0 +1,78 @@
+/* ================== RESET ================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* ================== VARIABLES ================== */
+:root {
+  --light-taupe: #f5843e;
+  --taupe: #e6762f;
+  --midnight-green: #053D58;
+  --sea-blue: #0E719A;
+  --bg-active: rgb(31, 69, 90);
+  --bg-active-hover: rgb(34, 76, 99);
+  --black-shadows: #f3f3f39d;
+  --black-shadows-border: #e0e0e0;
+  --davys-grey: #4E5255;
+  --black-color: #000000;
+  --white-color: #FFFFFF;
+  --green-color: #28a745;
+  --light-green-color: #d4edda;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --border-radius: 0.5rem;
+  --transition-duration: 0.8s;
+  --text-color-primary: #FFFFFF;
+  --text-color-secondary: rgb(138, 156, 166);
+  --text-color-terciary: #d07f4d;
+  --button-hover-color: rgba(171, 192, 204, 0.227);
+
+  --green-rgb: 34, 197, 94;
+  --light-green-color: #dcfce7;
+
+  --yellow: #f59e0b;
+  --yellow-rgb: 245, 158, 11;
+  --light-yellow-color: #fef3c7;
+
+  --orange: #fb923c;
+  --orange-rgb: 251, 146, 60;
+  --light-orange-color: #fff7ed;
+
+  --chart-5: #a855f7;
+  --chart-5-rgb: 168, 85, 247;
+
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+
+  --border-rgb: 203, 213, 225;
+
+  --accent: #4ade80;
+  --accent-rgb: 74, 222, 128;
+
+  --primary: #3b82f6;
+  --primary-rgb: 59, 130, 246;
+
+  --chart-4: #f97316;
+  --chart-4-rgb: 249, 115, 22;
+
+  --danger: #ef4444;
+  --danger-rgb: 239, 68, 68;
+
+}
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar {
+  flex-shrink: 0;
+}
