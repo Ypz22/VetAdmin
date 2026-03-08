@@ -8,7 +8,8 @@ import { useServices } from "../../queries/services.queries.js";
 import { usePets } from "../../queries/pets.queries.js";
 import { toTitleCase } from "../../utils/stringUtils.js";
 import toast from "react-hot-toast";
-import NewAppointmentGeneral from "../newAppointment/NewAppointmentGeneral.jsx";
+import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
+
 
 export function filterAppointmentsToday(appointments = []) {
     const today = new Date().toISOString().split("T")[0];

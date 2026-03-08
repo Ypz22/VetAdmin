@@ -9,7 +9,7 @@ import "./agenda.css";
 import { useAllDataAppointments, useCreateAppointment } from "../../queries/appointments.queries";
 import { useServices } from "../../queries/services.queries";
 import React from "react";
-import NewAppointmentGeneral from "../newAppointment/NewAppointmentGeneral";
+import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
 import { usePets } from "../../queries/pets.queries";
 import toast from "react-hot-toast";
 import { toTitleCase } from "../../utils/stringUtils";
