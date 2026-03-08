@@ -1,5 +1,3 @@
-Guarda esto como README.md
-
 # VetAdmin
 
 Sistema de gestión para clínicas veterinarias desarrollado con tecnologías modernas de frontend y backend.  
