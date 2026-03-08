@@ -5,14 +5,14 @@ import DashboardHeader from "../../components/DashboardHeader";
 import RegisterSearchBar from "./searchBar/RegisterSearchBar";
 import PatientList from "./patientList/PatientList";
 import { useCreatePet, usePetsAndOwner } from "../../queries/pets.queries";
-import NewPatient from "./newpatient/NewPatient.jsx";
 import toast from "react-hot-toast";
 import { useCreateClient } from "../../queries/clients.queries";
 import { toCapitalizeCase } from "../../utils/stringUtils.js";
-import NewAppointment from "./newappointment/Newappointment.jsx";
 import { useCreateAppointment } from "../../queries/appointments.queries";
 import { useServices } from "../../queries/services.queries";
 import { toTitleCase } from "../../utils/stringUtils";
+import NewPatient from "./newPatient/NewPatient.jsx";
+import NewAppointment from "./newAppointment/NewAppointment.jsx";
 
 const speciesFilters = [
     { label: "Todos", value: "todos" },
