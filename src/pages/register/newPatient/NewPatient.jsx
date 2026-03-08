@@ -4,7 +4,7 @@ import { Icons } from "../../../components/Named-lucide.jsx";
 import { Label } from "../../../components/Label.jsx";
 import Input from "../../../components/Input.jsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/Select.jsx";
-import { Textarea } from "../../../components/TextArea.jsx";
+import { Textarea } from "../../../components/Textarea.jsx";
 import Button from "../../../components/Button.jsx";
 import "./newPatient.css";
 import { useUpdatePet } from "../../../queries/pets.queries.js";
