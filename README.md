@@ -157,13 +157,29 @@ Multi-clinic support
 
 ## Preview
 
+### Login
+
+![dashboard](public/readme/login.png)
+
 ### Dashboard
 
 ![dashboard](public/readme/dashboard.png)
 
-### Patients
+### Agenda
 
-![patients](public/readme/patients.png)
+![patients](public/readme/agenda.png)
+
+### Calendar
+
+![dashboard](public/readme/calendar.png)
+
+### Register
+
+![patients](public/readme/register.png)
+
+### Admin
+
+![patients](public/readme/admin.png)
 
 ---
 
