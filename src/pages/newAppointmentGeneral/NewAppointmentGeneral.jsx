@@ -19,7 +19,7 @@ import {
     SelectValue,
     SelectItem,
 } from "../../components/Select";
-import { Textarea } from "../../components/TextArea";
+import { Textarea } from "../../components/TextArea.jsx";
 import Button from "../../components/Button";
 import { getSpeciesColor } from "../../utils/randomColor";
 import "./newAppointmentGeneral.css";
