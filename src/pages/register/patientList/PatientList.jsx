@@ -2,7 +2,7 @@ import React from "react";
 import "./patientList.css";
 import Patients from "./Patients";
 import PatientDetails from "./patientDetails/PatientDetails.jsx";
-import DeletePatient from "./patientDetails/deletePatient.jsx";
+import DeletePatient from "./patientDetails/DeletePatient.jsx";
 
 const PatientList = ({ patients, selectedPatient, setSelectedPatient, filtered, setNewAppointmentOpen, setNewPatientOpen, setEditPatientOpen }) => {
 
