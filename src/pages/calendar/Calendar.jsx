@@ -8,7 +8,7 @@ import DashboardHeader from "../../components/DashboardHeader";
 import "./calendar.css";
 import { useAllDataAppointments, useCreateAppointment } from "../../queries/appointments.queries";
 import { getInitials, toTitleCase } from "../../utils/stringUtils";
-import NewAppointmentGeneral from "../newAppointment/NewAppointmentGeneral";
+import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
 import { useServices } from "../../queries/services.queries";
 import { usePets } from "../../queries/pets.queries";
 import toast from "react-hot-toast";
