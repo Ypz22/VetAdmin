@@ -6,22 +6,22 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "../../../components/Dialog";
-import { Icons } from "../../../components/Named-lucide";
+} from "../../../components/Dialog.jsx";
+import { Icons } from "../../../components/Named-lucide.jsx";
 import { toCapitalizeCase } from "../../../utils/stringUtils.js";
-import Badge from "../../../components/Badget";
-import { Label } from "../../../components/Label";
-import Input from "../../../components/Input";
+import Badge from "../../../components/Badget.jsx";
+import { Label } from "../../../components/Label.jsx";
+import Input from "../../../components/Input.jsx";
 import {
     Select,
     SelectContent,
     SelectTrigger,
     SelectValue,
     SelectItem,
-} from "../../../components/Select";
-import { Textarea } from "../../../components/TextArea";
-import Button from "../../../components/Button";
-import { getSpeciesColor } from "../../../utils/randomColor";
+} from "../../../components/Select.jsx";
+import { Textarea } from "../../../components/TextArea.jsx";
+import Button from "../../../components/Button.jsx";
+import { getSpeciesColor } from "../../../utils/randomColor.js";
 import "./newAppointment.css";
 
 

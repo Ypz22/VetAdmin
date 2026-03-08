@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../../components/Dialog.jsx";
-import { Icons } from "../../../components/Named-lucide";
+import { Icons } from "../../../components/Named-lucide.jsx";
 import { Label } from "../../../components/Label.jsx";
 import Input from "../../../components/Input.jsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/Select.jsx";
