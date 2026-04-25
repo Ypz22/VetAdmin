@@ -103,3 +103,21 @@
 .paymentRecordDetails span {
     font-weight: 500;
 }
+
+.billingPlans {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.billingPlanButton {
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+    color: var(--text-color-secondary);
+}
+
+.billingPlanButtonActive {
+    background-color: var(--midnight-green);
+    color: var(--white-color);
+}

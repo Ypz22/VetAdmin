@@ -1,0 +1,51 @@
+.appointmentResponsePage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background:
+        radial-gradient(circle at top, rgba(var(--accent-rgb), 0.16), transparent 32%),
+        linear-gradient(180deg, var(--black-shadows) 0%, var(--white-color) 100%);
+}
+
+.appointmentResponseCard {
+    width: min(100%, 32rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 16px;
+    background-color: var(--white-color);
+    border: 1px solid var(--black-shadows-border);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.appointmentResponseIconWrap {
+    width: 4.5rem;
+    height: 4.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--midnight-green);
+    background-color: var(--button-hover-color);
+}
+
+.appointmentResponseText {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.appointmentResponseText h1 {
+    font-size: 1.75rem;
+    color: var(--black-color);
+}
+
+.appointmentResponseText p {
+    font-size: 1rem;
+    color: var(--text-color-secondary);
+}

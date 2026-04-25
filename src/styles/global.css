@@ -138,3 +138,38 @@ button {
     height: 2rem;
     width: 2rem;
 }
+
+.paginationControls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.paginationSummary {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.paginationActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.paginationButton {
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+    color: var(--text-color-secondary);
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: var(--button-hover-color);
+    color: var(--black-color);
+}
+
+.paginationButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

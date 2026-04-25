@@ -92,3 +92,14 @@
 .btnSecurityLogout:hover {
     background-color: rgba(var(--danger-rgb), 0.1);
 }
+
+.securityActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.btnSecurityLogoutAll {
+    background-color: var(--midnight-green);
+    color: var(--white-color);
+}

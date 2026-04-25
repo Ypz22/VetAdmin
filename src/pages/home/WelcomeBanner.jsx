@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
 
 
-export function filterAppointmentsToday(appointments = []) {
+function filterAppointmentsToday(appointments = []) {
     const today = new Date().toISOString().split("T")[0];
 
     return appointments.filter(
@@ -21,13 +21,13 @@ export function filterAppointmentsToday(appointments = []) {
 
 
 
-const WelcomeBanner = ({ nameUser }) => {
+const WelcomeBanner = () => {
     const { data: services = [] } = useServices();
     const { data: patients = [] } = usePets();
     const createAppointmentMutation = useCreateAppointment();
     const [newAppointmentOpen, setNewAppointmentOpen] = React.useState(false);
     const [appointmentForm, setAppointmentForm] = React.useState({});
-    const [emptyAppointmentForm, setEmptyAppointmentForm] = React.useState({})
+    const emptyAppointmentForm = {};
 
     const handleDialogChangeAppointment = (open) => {
         setNewAppointmentOpen(open);
@@ -40,14 +40,31 @@ const WelcomeBanner = ({ nameUser }) => {
         createAppointmentMutation.mutate({
             appointment_date: appointmentForm.date,
             appointment_time: appointmentForm.time,
-            status: appointmentForm.status,
             pet_id: appointmentForm.patient_id,
             service_id: appointmentForm.services,
             notes: appointmentForm.notes,
+            baseUrl: window.location.origin,
+        }, {
+            onSuccess: ({ appointment, emailSent, emailError }) => {
+                const patientName = appointment?.pets?.name ?? appointmentForm.vet;
+
+                toast.success(
+                    emailSent
+                        ? `Cita para ${toTitleCase(patientName)} creada y enviada al propietario`
+                        : `Cita para ${toTitleCase(patientName)} creada en pendiente`
+                );
+
+                if (!emailSent && emailError) {
+                    toast.error(emailError);
+                }
+
+                setAppointmentForm(emptyAppointmentForm)
+                setNewAppointmentOpen(false)
+            },
+            onError: (error) => {
+                toast.error("Error al crear cita: " + error.message)
+            }
         })
-        toast.success(`Cita para ${toTitleCase(appointmentForm.vet)} programada exitosamente`)
-        setAppointmentForm(emptyAppointmentForm)
-        setNewAppointmentOpen(false)
     }
 
     const speciesIcons = {

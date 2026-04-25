@@ -7,9 +7,24 @@ import Badge from "../../../components/Badget";
 import { getSpeciesColor } from "../../../utils/randomColor";
 import { shortId } from "../../../utils/stringUtils.js";
 import { getInitials } from "../../../utils/stringUtils.js";
+import PaginationControls from "../../../components/PaginationControls.jsx";
 
 
 const Patients = ({ patients, selectedPatient, setSelectedPatient, filtered, speciesIcons }) => {
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const itemsPerPage = 5;
+
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [filtered]);
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+    const safePage = Math.min(currentPage, totalPages);
+    const paginatedPatients = filtered.slice(
+        (safePage - 1) * itemsPerPage,
+        safePage * itemsPerPage
+    );
+
     return (
         <div className="patientListContainer">
             {patients.length <= 0 ? (
@@ -22,7 +37,8 @@ const Patients = ({ patients, selectedPatient, setSelectedPatient, filtered, spe
                     </CardContent>
                 </Card>
             ) : (
-                filtered.map((patient) => {
+                <>
+                    {paginatedPatients.map((patient) => {
                     const Icon = Icons[speciesIcons[patient.species.toLowerCase()]] || Icons["PawPrint"];
                     const isSelected = selectedPatient && selectedPatient.id === patient.id;
                     const color = getSpeciesColor(patient.species.toLowerCase());
@@ -66,7 +82,14 @@ const Patients = ({ patients, selectedPatient, setSelectedPatient, filtered, spe
                             }
                         />
                     )
-                })
+                    })}
+                    <PaginationControls
+                        currentPage={safePage}
+                        totalItems={filtered.length}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={setCurrentPage}
+                    />
+                </>
             )}
         </div >
     )

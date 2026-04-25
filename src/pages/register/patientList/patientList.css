@@ -404,6 +404,186 @@
     color: var(--black-color);
 }
 
+.patientHistoryDialogContent {
+    max-width: 42rem;
+}
+
+.patientHistoryHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.patientHistoryHeaderIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 10px;
+    background-color: var(--button-hover-color);
+    color: var(--midnight-green);
+}
+
+.patientHistoryHeaderText {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.patientHistoryDialogTitle {
+    font-size: 1.25rem;
+    color: var(--black-color);
+}
+
+.patientHistoryFilters {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.patientHistoryFilterItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.patientHistoryFilterLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-color-secondary);
+}
+
+.patientHistorySelectTrigger,
+.patientHistoryDateInput {
+    width: 100%;
+    min-height: 2.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+    color: var(--black-color);
+}
+
+.patientHistoryDateInput {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.patientHistoryDateInput:focus {
+    border-color: var(--light-taupe);
+}
+
+.patientHistoryList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: min(70vh, 40rem);
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}
+
+.patientHistoryCard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+}
+
+.patientHistoryCardTop {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.patientHistoryService {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--black-color);
+}
+
+.patientHistoryDate {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.patientHistoryMeta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.patientHistoryMetaItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.patientHistoryNotes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.875rem;
+    border-radius: 8px;
+    background-color: var(--black-shadows);
+}
+
+.patientHistoryNotes span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+}
+
+.patientHistoryNotes p {
+    font-size: 0.875rem;
+    color: var(--black-color);
+    overflow-wrap: anywhere;
+}
+
+.patientHistoryEmptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2.5rem 0.5rem 1rem;
+    text-align: center;
+}
+
+.patientHistoryEmptyIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 999px;
+    background-color: var(--button-hover-color);
+    color: var(--midnight-green);
+}
+
+.patientHistoryEmptyTitle {
+    font-size: 1rem;
+    color: var(--black-color);
+}
+
+.patientHistoryEmptyText {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.patientHistoryFilteredEmptyState {
+    padding-top: 1.5rem;
+}
+
 .deletePatientBody {
     display: flex;
     flex-direction: column;

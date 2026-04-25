@@ -46,8 +46,8 @@ const Register = () => {
     const [editPatientOpen, setEditPatientOpen] = React.useState(false)
     const [patientForm, setPatientForm] = React.useState({})
     const [appointmentForm, setAppointmentForm] = React.useState({})
-    const [emptyPatientForm, setEmptyPatientForm] = React.useState({})
-    const [emptyAppointmentForm, setEmptyAppointmentForm] = React.useState({})
+    const emptyPatientForm = {};
+    const emptyAppointmentForm = {};
 
     function handleNewPatientSubmit() {
         createClientMutation.mutate({
@@ -89,14 +89,29 @@ const Register = () => {
         createAppointmentMutation.mutate({
             appointment_date: appointmentForm.date,
             appointment_time: appointmentForm.time,
-            status: appointmentForm.status,
             pet_id: selectedPatient.id,
             service_id: appointmentForm.services,
             notes: appointmentForm.notes,
+            baseUrl: window.location.origin,
+        }, {
+            onSuccess: ({ emailSent, emailError }) => {
+                toast.success(
+                    emailSent
+                        ? `Cita para ${toTitleCase(selectedPatient.name)} creada y enviada al propietario`
+                        : `Cita para ${toTitleCase(selectedPatient.name)} creada en pendiente`
+                );
+
+                if (!emailSent && emailError) {
+                    toast.error(emailError);
+                }
+
+                setAppointmentForm(emptyAppointmentForm)
+                setNewAppointmentOpen(false)
+            },
+            onError: (error) => {
+                toast.error("Error al crear cita: " + error.message)
+            }
         })
-        toast.success(`Cita para ${toTitleCase(selectedPatient.name)} programada exitosamente`)
-        setAppointmentForm(emptyAppointmentForm)
-        setNewAppointmentOpen(false)
     }
 
     const handleDialogChangePatient = (open) => {

@@ -6,12 +6,15 @@ import { Avatar, AvatarFallback } from "../../components/Avatar";
 import Badge from "../../components/Badget";
 import DashboardHeader from "../../components/DashboardHeader";
 import "./calendar.css";
-import { useAllDataAppointments, useCreateAppointment } from "../../queries/appointments.queries";
+import { useAllDataAppointments, useCreateAppointment, useUpdateAppointment } from "../../queries/appointments.queries";
 import { getInitials, toTitleCase } from "../../utils/stringUtils";
 import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
 import { useServices } from "../../queries/services.queries";
 import { usePets } from "../../queries/pets.queries";
 import toast from "react-hot-toast";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/Dialog.jsx";
+import { friendlyError } from "../../utils/friendlyError.js";
+import PaginationControls from "../../components/PaginationControls.jsx";
 
 
 const DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
@@ -36,15 +39,31 @@ function getStatusLabel(status) {
     return STATUS_LABELS[status] ?? status;
 }
 
+function formatDate(dateString) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    return date.toLocaleDateString("es-ES", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
 const Calendar = () => {
 
     const { data: events = [] } = useAllDataAppointments();
     const { data: services = [] } = useServices();
     const { data: patients = [] } = usePets();
     const createAppointmentMutation = useCreateAppointment();
+    const updateAppointmentMutation = useUpdateAppointment();
     const [newAppointmentOpen, setNewAppointmentOpen] = useState(false);
     const [appointmentForm, setAppointmentForm] = useState({});
-    const [emptyAppointmentForm, setEmptyAppointmentForm] = useState({})
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [eventsPage, setEventsPage] = useState(1);
+    const emptyAppointmentForm = {};
+    const itemsPerPage = 5;
 
     const handleDialogChangeAppointment = (open) => {
         setNewAppointmentOpen(open);
@@ -57,14 +76,56 @@ const Calendar = () => {
         createAppointmentMutation.mutate({
             appointment_date: appointmentForm.date,
             appointment_time: appointmentForm.time,
-            status: appointmentForm.status,
             pet_id: appointmentForm.patient_id,
             service_id: appointmentForm.services,
             notes: appointmentForm.notes,
+            baseUrl: window.location.origin,
+        }, {
+            onSuccess: ({ appointment, emailSent, emailError }) => {
+                const patientName = appointment?.pets?.name ?? appointmentForm.vet;
+
+                toast.success(
+                    emailSent
+                        ? `Cita para ${toTitleCase(patientName)} creada y enviada al propietario`
+                        : `Cita para ${toTitleCase(patientName)} creada en pendiente`
+                );
+
+                if (!emailSent && emailError) {
+                    toast.error(emailError);
+                }
+
+                setAppointmentForm(emptyAppointmentForm)
+                setNewAppointmentOpen(false)
+            },
+            onError: (error) => {
+                toast.error("Error al crear cita: " + error.message)
+            }
         })
-        toast.success(`Cita para ${toTitleCase(appointmentForm.vet)} programada exitosamente`)
-        setAppointmentForm(emptyAppointmentForm)
-        setNewAppointmentOpen(false)
+    }
+
+    function handleAppointmentStatusUpdate(status) {
+        if (!selectedAppointment) return;
+
+        updateAppointmentMutation.mutate(
+            {
+                id: selectedAppointment.id,
+                status,
+            },
+            {
+                onSuccess: (updatedRows) => {
+                    const updatedAppointment = Array.isArray(updatedRows) ? updatedRows[0] : updatedRows;
+                    setSelectedAppointment(updatedAppointment ?? { ...selectedAppointment, status });
+                    toast.success(
+                        status === "cancelled"
+                            ? "La cita fue cancelada."
+                            : "La cita fue confirmada."
+                    );
+                },
+                onError: (error) => {
+                    toast.error(friendlyError(error?.message));
+                },
+            }
+        );
     }
 
     const speciesIcons = {
@@ -89,7 +150,14 @@ const Calendar = () => {
             month - 1 === currentMonth &&
             day === selectedDate
         );
-    });
+    }).sort((a, b) => a.appointment_time.localeCompare(b.appointment_time));
+
+    const totalPages = Math.max(1, Math.ceil(selectedEvents.length / itemsPerPage));
+    const safePage = Math.min(eventsPage, totalPages);
+    const visibleSelectedEvents = selectedEvents.slice(
+        (safePage - 1) * itemsPerPage,
+        safePage * itemsPerPage
+    );
 
     const eventDates = new Set(
         events
@@ -105,9 +173,11 @@ const Calendar = () => {
 
     const handlePrevMonth = () => {
         setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1))
+        setEventsPage(1)
     }
     const handleNextMonth = () => {
         setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1))
+        setEventsPage(1)
     }
     return (
         <div>
@@ -169,7 +239,10 @@ const Calendar = () => {
                                     return (
                                         <Button
                                             key={day}
-                                            onClick={() => setSelectedDate(day)}
+                                            onClick={() => {
+                                                setSelectedDate(day)
+                                                setEventsPage(1)
+                                            }}
                                             className={`btnDay ${isSelected ? "btnSelected" : isToday ? "btnToday" : "btnOutlineDay"
                                                 }`}
                                             label={
@@ -218,30 +291,46 @@ const Calendar = () => {
                                     />
                                 </div>
                             ) : (
-                                <div className="events-list">
-                                    {selectedEvents.map((event, index) => (
-                                        <div key={index} className="event-item">
-                                            <div className="event-info">
-                                                <Avatar className="event-avatar">
-                                                    <AvatarFallback className="event-avatar-fallback">
-                                                        {getInitials(event.pets.owner_id.full_name)}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <div className="event-details">
-                                                    <p className="event-pet">{event.pets.name}</p>
-                                                    <p className="event-owner">{event.pets.owner_id.full_name}</p>
-                                                </div>
-                                            </div>
-                                            <div className="event-meta">
-                                                <div className="event-time">
-                                                    <Icons.Clock className="icon" />
-                                                    {event.appointment_time.slice(0, 5)}
-                                                </div>
-                                                <Badge className={`badge ${event.status}`} label={getStatusLabel(event.status)} />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <>
+                                    <div className="events-list">
+                                        {visibleSelectedEvents.map((event) => (
+                                            <Button
+                                                key={event.id}
+                                                type="button"
+                                                className="event-item"
+                                                onClick={() => setSelectedAppointment(event)}
+                                                label={
+                                                    <>
+                                                        <div className="event-info">
+                                                            <Avatar className="event-avatar">
+                                                                <AvatarFallback className="event-avatar-fallback">
+                                                                    {getInitials(event.pets?.owner_id?.full_name)}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="event-details">
+                                                                <p className="event-pet">{event.pets?.name ?? "Mascota"}</p>
+                                                                <p className="event-owner">{event.pets?.owner_id?.full_name ?? "Propietario"}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="event-meta">
+                                                            <div className="event-time">
+                                                                <Icons.Clock className="icon" />
+                                                                {event.appointment_time.slice(0, 5)}
+                                                            </div>
+                                                            <Badge className={`badge ${event.status}`} label={getStatusLabel(event.status)} />
+                                                        </div>
+                                                    </>
+                                                }
+                                            />
+                                        ))}
+                                    </div>
+                                    <PaginationControls
+                                        currentPage={safePage}
+                                        totalItems={selectedEvents.length}
+                                        itemsPerPage={itemsPerPage}
+                                        onPageChange={setEventsPage}
+                                    />
+                                </>
                             )}
                         </CardContent>
                     </Card>
@@ -258,6 +347,116 @@ const Calendar = () => {
                 services={services}
                 patients={patients}
             />
+            <Dialog open={!!selectedAppointment} onOpenChange={(open) => !open && setSelectedAppointment(null)}>
+                {selectedAppointment && (
+                    <DialogContent className="appointmentDetailsDialog">
+                        <DialogHeader>
+                            <div className="appointmentDetailsHeader">
+                                <div className="appointmentDetailsIcon">
+                                    <Icons.CalendarCheck className="sizeIcon5" />
+                                </div>
+                                <div>
+                                    <DialogTitle>Detalle de la cita</DialogTitle>
+                                    <DialogDescription>
+                                        {selectedAppointment.pets?.name ?? "Mascota"} - {getStatusLabel(selectedAppointment.status)}
+                                    </DialogDescription>
+                                </div>
+                            </div>
+                        </DialogHeader>
+
+                        <div className="appointmentDetailsBody">
+                            <div className="appointmentDetailsMain">
+                                <Avatar className="appointmentDetailsAvatar">
+                                    <AvatarFallback>
+                                        {getInitials(selectedAppointment.pets?.owner_id?.full_name)}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <p className="appointmentDetailsPet">{selectedAppointment.pets?.name ?? "Mascota"}</p>
+                                    <p className="appointmentDetailsOwner">{selectedAppointment.pets?.owner_id?.full_name ?? "Propietario"}</p>
+                                </div>
+                                <Badge className={`badge ${selectedAppointment.status}`} label={getStatusLabel(selectedAppointment.status)} />
+                            </div>
+
+                            <div className="appointmentDetailsGrid">
+                                <div className="appointmentDetailsItem">
+                                    <Icons.Calendar className="sizeIcon4" />
+                                    <div>
+                                        <span>Fecha</span>
+                                        <p>{formatDate(selectedAppointment.appointment_date)}</p>
+                                    </div>
+                                </div>
+                                <div className="appointmentDetailsItem">
+                                    <Icons.Clock className="sizeIcon4" />
+                                    <div>
+                                        <span>Hora</span>
+                                        <p>{selectedAppointment.appointment_time?.slice(0, 5) ?? "Sin hora"}</p>
+                                    </div>
+                                </div>
+                                <div className="appointmentDetailsItem">
+                                    <Icons.Stethoscope className="sizeIcon4" />
+                                    <div>
+                                        <span>Servicio</span>
+                                        <p>{selectedAppointment.services?.name ?? "Servicio"}</p>
+                                    </div>
+                                </div>
+                                <div className="appointmentDetailsItem">
+                                    <Icons.Timer className="sizeIcon4" />
+                                    <div>
+                                        <span>Duración</span>
+                                        <p>
+                                            {selectedAppointment.services?.duration_minutes
+                                                ? `${selectedAppointment.services.duration_minutes} min`
+                                                : "Sin duración"}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="appointmentDetailsItem">
+                                    <Icons.Phone className="sizeIcon4" />
+                                    <div>
+                                        <span>Teléfono</span>
+                                        <p>{selectedAppointment.pets?.owner_id?.phone ?? "Sin teléfono"}</p>
+                                    </div>
+                                </div>
+                                <div className="appointmentDetailsItem">
+                                    <Icons.Mail className="sizeIcon4" />
+                                    <div>
+                                        <span>Correo</span>
+                                        <p>{selectedAppointment.pets?.owner_id?.email ?? "Sin correo"}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="appointmentDetailsNotes">
+                                <span>Notas</span>
+                                <p>{selectedAppointment.notes || "Sin notas registradas."}</p>
+                            </div>
+
+                            <div className="appointmentDetailsActions">
+                                {selectedAppointment.status !== "confirmed" && (
+                                    <Button
+                                        type="button"
+                                        className="btn appointmentConfirmButton"
+                                        onClick={() => handleAppointmentStatusUpdate("confirmed")}
+                                        disabled={updateAppointmentMutation.isPending}
+                                        label="Confirmar cita"
+                                    />
+                                )}
+
+                                {selectedAppointment.status !== "cancelled" && (
+                                    <Button
+                                        type="button"
+                                        className="btn appointmentCancelButton"
+                                        onClick={() => handleAppointmentStatusUpdate("cancelled")}
+                                        disabled={updateAppointmentMutation.isPending}
+                                        label="Cancelar cita"
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </DialogContent>
+                )}
+            </Dialog>
         </div>
     )
 };

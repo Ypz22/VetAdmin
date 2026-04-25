@@ -10,15 +10,6 @@ import Security from "./security/Security";
 import DashboardHeader from "../../components/DashboardHeader";
 import "./admin.css";
 
-
-const teamMembers = [
-    { name: "Dr. Alejandro Garcia", role: "Veterinario Principal", email: "a.garcia@vetadmin.com", initials: "AG", status: "activo" },
-    { name: "Dra. Sofia Mendez", role: "Veterinaria", email: "s.mendez@vetadmin.com", initials: "SM", status: "activo" },
-    { name: "Carlos Rivera", role: "Tecnico Veterinario", email: "c.rivera@vetadmin.com", initials: "CR", status: "activo" },
-    { name: "Ana Gutierrez", role: "Recepcionista", email: "a.gutierrez@vetadmin.com", initials: "AG", status: "activo" },
-    { name: "Dr. Miguel Torres", role: "Veterinario", email: "m.torres@vetadmin.com", initials: "MT", status: "inactivo" },
-]
-
 const tabs = [
     { id: "clinica", label: "Clinica", icon: "Building2" },
     { id: "equipo", label: "Equipo", icon: "Users" },
@@ -66,7 +57,7 @@ const Admin = () => {
 
                     <div>
                         {activeTab === "clinica" && <Clinica />}
-                        {activeTab === "equipo" && <Team members={teamMembers} />}
+                        {activeTab === "equipo" && <Team />}
                         {activeTab === "facturacion" && <Billing />}
                         {activeTab === "notificaciones" && <Notification />}
                         {activeTab === "seguridad" && <Security />}

@@ -2,7 +2,6 @@ import React from "react";
 import { Card, CardContent } from "../../../components/Card.jsx";
 import { Icons } from "../../../components/Named-lucide.jsx";
 import { useAppointments, useAppointmentsCountConfirmed } from "../../../queries/appointments.queries.js";
-import { useProfileClientCount } from "../../../queries/profiles.queries.js";
 import { useServices } from "../../../queries/services.queries.js";
 import { useClientsCount } from "../../../queries/clients.queries.js";
 

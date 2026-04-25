@@ -318,6 +318,10 @@
     border-left: 4px solid var(--midnight-green);
 }
 
+.type-default {
+    border-left: 4px solid var(--light-taupe);
+}
+
 .agendaAppointmentDetails {
     border-top: 1px solid var(--black-shadows-border);
     padding: 0 1rem;

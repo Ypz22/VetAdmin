@@ -210,10 +210,13 @@
 }
 
 .event-item {
+    width: 100%;
+    text-align: left;
     border-radius: 10px;
     background-color: var(--black-shadows);
     border: 1px solid var(--black-shadows-border);
     padding: 1rem;
+    cursor: pointer;
 }
 
 .event-info {
@@ -271,4 +274,145 @@
 .event-time .icon {
     height: 0.875rem;
     width: 0.875rem;
+}
+
+.appointmentDetailsDialog {
+    max-width: 38rem;
+}
+
+.appointmentDetailsHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.appointmentDetailsIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--midnight-green);
+    background-color: var(--black-shadows);
+    border: 1px solid var(--black-shadows-border);
+}
+
+.appointmentDetailsBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.appointmentDetailsMain {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: var(--black-shadows);
+    border: 1px solid var(--black-shadows-border);
+}
+
+.appointmentDetailsAvatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--button-hover-color);
+    color: var(--midnight-green);
+}
+
+.appointmentDetailsPet {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--black-color);
+}
+
+.appointmentDetailsOwner {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+.appointmentDetailsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.appointmentDetailsItem {
+    display: flex;
+    gap: 0.625rem;
+    align-items: flex-start;
+    padding: 0.875rem;
+    border-radius: 8px;
+    border: 1px solid var(--black-shadows-border);
+}
+
+.appointmentDetailsItem svg {
+    flex-shrink: 0;
+    color: var(--taupe);
+}
+
+.appointmentDetailsItem span,
+.appointmentDetailsNotes span {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+}
+
+.appointmentDetailsItem p,
+.appointmentDetailsNotes p {
+    color: var(--black-color);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}
+
+.appointmentDetailsNotes {
+    padding: 0.875rem;
+    border-radius: 8px;
+    background-color: var(--black-shadows);
+    border: 1px solid var(--black-shadows-border);
+}
+
+.appointmentDetailsActions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.appointmentConfirmButton {
+    background-color: var(--light-taupe);
+    color: var(--white-color);
+}
+
+.appointmentConfirmButton:hover {
+    background-color: var(--taupe);
+}
+
+.appointmentCancelButton {
+    border: 1px solid rgba(var(--orange-rgb), 0.2);
+    color: var(--orange);
+    background-color: rgba(var(--orange-rgb), 0.08);
+}
+
+.appointmentCancelButton:hover {
+    background-color: rgba(var(--orange-rgb), 0.16);
+}
+
+@media (max-width: 760px) {
+    .calendar-content {
+        grid-template-columns: 1fr;
+    }
+
+    .appointmentDetailsGrid,
+    .appointmentDetailsMain {
+        grid-template-columns: 1fr;
+    }
+
+    .appointmentDetailsDialog {
+        max-width: calc(100vw - 2rem);
+    }
 }

@@ -42,7 +42,7 @@ export function useCreateProfile() {
     const qc = useQueryClient();
 
     return useMutation({
-        mutationFn: cretateProfile,
+        mutationFn: createProfile,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: profilesKeys.all });
         },

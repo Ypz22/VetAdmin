@@ -8,6 +8,7 @@ import Register from './pages/register/Register.jsx';
 import Admin from './pages/admin/Admin.jsx';
 import Calendar from './pages/calendar/Calendar.jsx';
 import Agenda from './pages/agenda/Agenda.jsx';
+import AppointmentResponse from './pages/appointmentResponse/AppointmentResponse.jsx';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
       <Router>
         <Routes>
           <Route index element={<Login />} />
+          <Route path="/appointment/respond" element={<AppointmentResponse />} />
           <Route element={<AppLayout />}>
             <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />

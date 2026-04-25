@@ -46,6 +46,10 @@
     gap: 1.5rem;
 }
 
+.clinica-info-item-full {
+    grid-column: 1 / -1;
+}
+
 .clinica-info-item {
     display: flex;
     flex-direction: column;
@@ -61,6 +65,26 @@
     padding: 0.5rem 0.75rem 0.5rem 0.75rem !important;
     color: var(--black-color) !important;
     background-color: var(--black-shadows) !important;
+}
+
+.input-clinica-schedule {
+    max-width: 14rem;
+}
+
+.clinica-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.btn-clinica-primary {
+    background-color: var(--light-taupe);
+    color: var(--white-color);
+}
+
+.btn-clinica-primary:hover {
+    background-color: var(--taupe);
 }
 
 .clinica-schedule-header {

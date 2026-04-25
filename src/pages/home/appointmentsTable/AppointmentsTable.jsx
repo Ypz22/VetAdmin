@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Icons } from "../../../components/Named-lucide.jsx";
 import { Avatar, AvatarFallback } from "../../../components/Avatar.jsx";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/Card.jsx";
@@ -5,6 +6,7 @@ import Button from "../../../components/Button.jsx";
 import Badge from "../../../components/Badget.jsx";
 import { useAllDataAppointments } from "../../../queries/appointments.queries.js";
 import { getInitials } from "../../../utils/stringUtils.js";
+import PaginationControls from "../../../components/PaginationControls.jsx";
 
 const STATUS_LABELS = {
     pending: "Pendiente",
@@ -18,6 +20,9 @@ function getStatusLabel(status) {
 
 const AppointmentsTable = () => {
     const { data: appointments = [] } = useAllDataAppointments();
+    const [todayPage, setTodayPage] = useState(1);
+    const [upcomingPage, setUpcomingPage] = useState(1);
+    const itemsPerPage = 5;
 
     const today = new Date().toLocaleDateString("en-CA");
 
@@ -27,6 +32,22 @@ const AppointmentsTable = () => {
 
     const upcomingAppointments = appointments.filter(
         (a) => a.appointment_date > today
+    );
+
+    const totalTodayPages = Math.max(1, Math.ceil(todayAppointments.length / itemsPerPage));
+    const safeTodayPage = Math.min(todayPage, totalTodayPages);
+
+    const totalUpcomingPages = Math.max(1, Math.ceil(upcomingAppointments.length / itemsPerPage));
+    const safeUpcomingPage = Math.min(upcomingPage, totalUpcomingPages);
+
+    const paginatedTodayAppointments = todayAppointments.slice(
+        (safeTodayPage - 1) * itemsPerPage,
+        safeTodayPage * itemsPerPage
+    );
+
+    const paginatedUpcomingAppointments = upcomingAppointments.slice(
+        (safeUpcomingPage - 1) * itemsPerPage,
+        safeUpcomingPage * itemsPerPage
     );
 
     return (
@@ -58,7 +79,7 @@ const AppointmentsTable = () => {
                 ) : (
                     <CardContent className="appointmentsTableContent">
                         <div className="appointmentsTableBody">
-                            {todayAppointments.map((appointment) => (
+                            {paginatedTodayAppointments.map((appointment) => (
                                 <div
                                     key={`${appointment.appointment_time}-${appointment.pets.name}`}
                                     className="appointmentRow"
@@ -92,6 +113,12 @@ const AppointmentsTable = () => {
                                 </div>
                             ))}
                         </div>
+                        <PaginationControls
+                            currentPage={safeTodayPage}
+                            totalItems={todayAppointments.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={setTodayPage}
+                        />
                     </CardContent>
                 )}
             </Card>
@@ -123,7 +150,7 @@ const AppointmentsTable = () => {
                 ) : (
                     <CardContent className="appointmentsTableContent">
                         <div className="appointmentsTableBody">
-                            {upcomingAppointments.map((appointment) => (
+                            {paginatedUpcomingAppointments.map((appointment) => (
                                 <div
                                     key={`${appointment.appointment_time}-${appointment.pets.name}`}
                                     className="appointmentRow"
@@ -157,6 +184,12 @@ const AppointmentsTable = () => {
                                 </div>
                             ))}
                         </div>
+                        <PaginationControls
+                            currentPage={safeUpcomingPage}
+                            totalItems={upcomingAppointments.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={setUpcomingPage}
+                        />
                     </CardContent>
                 )}
             </Card>

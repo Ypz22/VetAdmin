@@ -7,7 +7,8 @@ import {
     deleteAppointment,
     fetchAppointmentsCount,
     fetchAppointmentsCountToday,
-    fetchAllDataAppointments
+    fetchAllDataAppointments,
+    respondToAppointment,
 } from "../api/appointments.api.js";
 
 export const appointmentsKeys = {
@@ -68,7 +69,7 @@ export function useUpdateAppointment() {
     const qc = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, payload }) => updateAppointment(id, payload),
+        mutationFn: updateAppointment,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: appointmentsKeys.all });
         },
@@ -83,5 +84,11 @@ export function useDeleteAppointment() {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: appointmentsKeys.all });
         },
+    });
+}
+
+export function useRespondToAppointment() {
+    return useMutation({
+        mutationFn: respondToAppointment,
     });
 }

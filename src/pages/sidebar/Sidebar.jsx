@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Button from "../../components/Button";
 import { Icons } from "../../components/Named-lucide";
 import { Avatar, AvatarFallback } from "../../components/Avatar.jsx";
@@ -10,18 +10,27 @@ import { useProfileById } from "../../queries/profiles.queries.js";
 import { useVeterinaryById } from "../../queries/veterinaries.queries.js";
 import { useAppointmentsCountConfirmed } from "../../queries/appointments.queries.js";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useLogout } from "../../queries/credentials.queries.js";
+
+const ROLE_LABELS = {
+    owner: "Propietario",
+    staff: "Personal",
+    client: "Cliente",
+};
 
 const Sidebar = () => {
-    const [activeIndex, setActiveIndex] = useState("Panel de control");
     const { data: appointmentsCountConfirmed } = useAppointmentsCountConfirmed();
     const navigate = useNavigate();
     const location = useLocation();
-
-    const ROLE_LABELS = {
-        owner: "Propietario",
-        staff: "Personal",
-        client: "Cliente",
-    };
+    const logoutMutation = useLogout({
+        onSuccess: () => {
+            toast.success("Sesión cerrada correctamente");
+            navigate("/", { replace: true });
+        },
+        onError: (error) => {
+            toast.error(friendlyError(error?.message));
+        },
+    });
 
     const navItems = [
         { icon: "LayoutDashboard", label: "Panel de control", navigate: "/home" },
@@ -78,7 +87,7 @@ const Sidebar = () => {
                             <li key={item.label}>
                                 <Button
                                     type="button"
-                                    onClick={() => { setActiveIndex(item.label); navigate(item.navigate) }}
+                                    onClick={() => navigate(item.navigate)}
                                     className={`buttonSidebar ${isActive ? "activeIndex" : "noActiveIndex"
                                         }`}
                                     label={
@@ -132,6 +141,10 @@ const Sidebar = () => {
                         <Button
                             type="button"
                             className="buttonLogout"
+                            onClick={() => logoutMutation.mutate()}
+                            disabled={logoutMutation.isPending}
+                            title="Cerrar sesión"
+                            aria-label="Cerrar sesión"
                             label={<Icons.LogOut className="iconLogout" />}
                         />
                     </div>

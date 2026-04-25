@@ -13,6 +13,7 @@ import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGenera
 import { usePets } from "../../queries/pets.queries";
 import toast from "react-hot-toast";
 import { toTitleCase } from "../../utils/stringUtils";
+import PaginationControls from "../../components/PaginationControls.jsx";
 
 const STATUS_LABELS = {
     pending: "Pendiente",
@@ -21,18 +22,14 @@ const STATUS_LABELS = {
 };
 
 const typeColors = {
-    Vacunación: "type-vacunacion",
-    Vacunacion: "type-vacunacion",
-    "Consulta general": "type-revision-general",
-    "Revision general": "type-revision-general",
-    "Cirugía menor": "type-cirugia-menor",
-    "Cirugia menor": "type-cirugia-menor",
-    Cirugía: "type-cirugia",
-    Cirugia: "type-cirugia",
-    Desparasitación: "type-desparasitacion",
-    Desparasitacion: "type-desparasitacion",
-    "Control postoperatorio": "type-control",
-    Control: "type-control",
+    vacunacion: "type-vacunacion",
+    consulta_general: "type-revision-general",
+    revision_general: "type-revision-general",
+    cirugia_menor: "type-cirugia-menor",
+    cirugia: "type-cirugia",
+    desparasitacion: "type-desparasitacion",
+    control_postoperatorio: "type-control",
+    control: "type-control",
 };
 
 function getStatusLabel(status) {
@@ -70,6 +67,14 @@ function formatTime(time) {
     return time?.slice(0, 5) || "";
 }
 
+function normalizeServiceName(name = "") {
+    return name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/\s+/g, "_");
+}
+
 function getInitials(name = "") {
     return name
         .split(" ")
@@ -86,7 +91,9 @@ const Agenda = () => {
     const createAppointmentMutation = useCreateAppointment();
     const [newAppointmentOpen, setNewAppointmentOpen] = useState(false);
     const [appointmentForm, setAppointmentForm] = React.useState({});
-    const [emptyAppointmentForm, setEmptyAppointmentForm] = React.useState({})
+    const [appointmentsPage, setAppointmentsPage] = useState(1);
+    const emptyAppointmentForm = {};
+    const itemsPerPage = 5;
 
     const handleDialogChangeAppointment = (open) => {
         setNewAppointmentOpen(open);
@@ -99,14 +106,31 @@ const Agenda = () => {
         createAppointmentMutation.mutate({
             appointment_date: appointmentForm.date,
             appointment_time: appointmentForm.time,
-            status: appointmentForm.status,
             pet_id: appointmentForm.patient_id,
             service_id: appointmentForm.services,
             notes: appointmentForm.notes,
+            baseUrl: window.location.origin,
+        }, {
+            onSuccess: ({ appointment, emailSent, emailError }) => {
+                const patientName = appointment?.pets?.name ?? appointmentForm.vet;
+
+                toast.success(
+                    emailSent
+                        ? `Cita para ${toTitleCase(patientName)} creada y enviada al propietario`
+                        : `Cita para ${toTitleCase(patientName)} creada en pendiente`
+                );
+
+                if (!emailSent && emailError) {
+                    toast.error(emailError);
+                }
+
+                setAppointmentForm(emptyAppointmentForm)
+                setNewAppointmentOpen(false)
+            },
+            onError: (error) => {
+                toast.error("Error al crear cita: " + error.message)
+            }
         })
-        toast.success(`Cita para ${toTitleCase(appointmentForm.vet)} programada exitosamente`)
-        setAppointmentForm(emptyAppointmentForm)
-        setNewAppointmentOpen(false)
     }
 
     const speciesIcons = {
@@ -116,9 +140,8 @@ const Agenda = () => {
         conejo: "Rabbit",
     }
 
-    const today = new Date();
-
     const weekDates = useMemo(() => {
+        const today = new Date();
         return [-2, -1, 0, 1, 2].map((offset) => {
             const d = new Date(today);
             d.setHours(0, 0, 0, 0);
@@ -138,6 +161,13 @@ const Agenda = () => {
             .filter((app) => app.appointment_date === currentDateKey)
             .sort((a, b) => a.appointment_time.localeCompare(b.appointment_time));
     }, [appointments, currentDateKey]);
+
+    const totalPages = Math.max(1, Math.ceil(appointmentsBySelectedDay.length / itemsPerPage));
+    const safePage = Math.min(appointmentsPage, totalPages);
+    const visibleAppointmentsBySelectedDay = appointmentsBySelectedDay.slice(
+        (safePage - 1) * itemsPerPage,
+        safePage * itemsPerPage
+    );
 
     const weekCounts = useMemo(() => {
         return weekDates.map((date) => {
@@ -216,7 +246,11 @@ const Agenda = () => {
                                         )}
                                     </>
                                 }
-                                onClick={() => setSelectedDay(idx)}
+                                onClick={() => {
+                                    setSelectedDay(idx)
+                                    setAppointmentsPage(1)
+                                    setExpandedItem(null)
+                                }}
                             />
                         );
                     })}
@@ -262,89 +296,97 @@ const Agenda = () => {
                                     <p>No hay citas para este día</p>
                                 </div>
                             ) : (
-                                <div className="agendaAppointmentsList">
-                                    {appointmentsBySelectedDay.map((app) => {
-                                        const key = app.id;
-                                        const isExpanded = expandedItem === key;
+                                <>
+                                    <div className="agendaAppointmentsList">
+                                        {visibleAppointmentsBySelectedDay.map((app) => {
+                                            const key = app.id;
+                                            const isExpanded = expandedItem === key;
 
-                                        const petName = app.pets?.name ?? "Mascota";
-                                        const ownerName = app.pets?.owner_id?.full_name ?? "Propietario";
-                                        const ownerPhone = app.pets?.owner_id?.phone ?? "Sin teléfono";
-                                        const serviceName = app.services?.name ?? "Servicio";
-                                        const duration = app.services?.duration_minutes
-                                            ? `${app.services.duration_minutes} min`
-                                            : "Sin duración";
+                                            const petName = app.pets?.name ?? "Mascota";
+                                            const ownerName = app.pets?.owner_id?.full_name ?? "Propietario";
+                                            const ownerPhone = app.pets?.owner_id?.phone ?? "Sin teléfono";
+                                            const serviceName = app.services?.name ?? "Servicio";
+                                            const duration = app.services?.duration_minutes
+                                                ? `${app.services.duration_minutes} min`
+                                                : "Sin duración";
 
-                                        return (
-                                            <Button
-                                                key={key}
-                                                type="button"
-                                                onClick={() => setExpandedItem(isExpanded ? null : key)}
-                                                className={`btnAgendaAppointment
-                                                    ${isExpanded ? "agendaAppointmentExpanded" : "agendaAppointmentCollapsed"}
-                                                    ${typeColors[serviceName] || "type-default"}`}
-                                                label={
-                                                    <>
-                                                        <div className="agendaAppointmentMain">
-                                                            <div className="agendaAppointmentTime">
-                                                                <span className="time">{formatTime(app.appointment_time)}</span>
-                                                                <span className="duration">{duration}</span>
-                                                            </div>
-
-                                                            <Avatar className="agendaAppointmentAvatar">
-                                                                <AvatarFallback>
-                                                                    {getInitials(ownerName)}
-                                                                </AvatarFallback>
-                                                            </Avatar>
-
-                                                            <div className="agendaAppointmentPetOwner">
-                                                                <p className="pet">{petName}</p>
-                                                                <p className="owner">{ownerName}</p>
-                                                            </div>
-
-                                                            <div className="agendaAppointmentRoom">
-                                                                <Icons.MapPin className="icon" />
-                                                                Sala
-                                                            </div>
-
-                                                            <Badge
-                                                                className={`agendaAppointmentTypeBadge ${app.status}`}
-                                                                label={getStatusLabel(app.status)}
-                                                            />
-                                                        </div>
-
-                                                        {isExpanded && (
-                                                            <div className="agendaAppointmentDetails">
-                                                                <div className="agendaAppointmentDetailsRow">
-                                                                    <div className="agendaAppointmentDetailsType">
-                                                                        <Icons.Stethoscope className="sizeIcon4" />
-                                                                        <span>{serviceName}</span>
-                                                                    </div>
-
-                                                                    <div className="agendaAppointmentDetailsType">
-                                                                        <Icons.Phone className="sizeIcon4" />
-                                                                        <span>{ownerPhone}</span>
-                                                                    </div>
-
-                                                                    <div className="agendaAppointmentDetailsType">
-                                                                        <Icons.Clock className="sizeIcon4" />
-                                                                        <span>Duración: {duration}</span>
-                                                                    </div>
+                                            return (
+                                                <Button
+                                                    key={key}
+                                                    type="button"
+                                                    onClick={() => setExpandedItem(isExpanded ? null : key)}
+                                                    className={`btnAgendaAppointment
+                                                        ${isExpanded ? "agendaAppointmentExpanded" : "agendaAppointmentCollapsed"}
+                                                        ${typeColors[normalizeServiceName(serviceName)] || "type-default"}`}
+                                                    label={
+                                                        <>
+                                                            <div className="agendaAppointmentMain">
+                                                                <div className="agendaAppointmentTime">
+                                                                    <span className="time">{formatTime(app.appointment_time)}</span>
+                                                                    <span className="duration">{duration}</span>
                                                                 </div>
 
-                                                                {app.notes && (
-                                                                    <p className="agendaAppointmentNotes">
-                                                                        Notas: {app.notes}
-                                                                    </p>
-                                                                )}
+                                                                <Avatar className="agendaAppointmentAvatar">
+                                                                    <AvatarFallback>
+                                                                        {getInitials(ownerName)}
+                                                                    </AvatarFallback>
+                                                                </Avatar>
+
+                                                                <div className="agendaAppointmentPetOwner">
+                                                                    <p className="pet">{petName}</p>
+                                                                    <p className="owner">{ownerName}</p>
+                                                                </div>
+
+                                                                <div className="agendaAppointmentRoom">
+                                                                    <Icons.MapPin className="icon" />
+                                                                    Sala
+                                                                </div>
+
+                                                                <Badge
+                                                                    className={`agendaAppointmentTypeBadge ${app.status}`}
+                                                                    label={getStatusLabel(app.status)}
+                                                                />
                                                             </div>
-                                                        )}
-                                                    </>
-                                                }
-                                            />
-                                        );
-                                    })}
-                                </div>
+
+                                                            {isExpanded && (
+                                                                <div className="agendaAppointmentDetails">
+                                                                    <div className="agendaAppointmentDetailsRow">
+                                                                        <div className="agendaAppointmentDetailsType">
+                                                                            <Icons.Stethoscope className="sizeIcon4" />
+                                                                            <span>{serviceName}</span>
+                                                                        </div>
+
+                                                                        <div className="agendaAppointmentDetailsType">
+                                                                            <Icons.Phone className="sizeIcon4" />
+                                                                            <span>{ownerPhone}</span>
+                                                                        </div>
+
+                                                                        <div className="agendaAppointmentDetailsType">
+                                                                            <Icons.Clock className="sizeIcon4" />
+                                                                            <span>Duración: {duration}</span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {app.notes && (
+                                                                        <p className="agendaAppointmentNotes">
+                                                                            Notas: {app.notes}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    }
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                    <PaginationControls
+                                        currentPage={safePage}
+                                        totalItems={appointmentsBySelectedDay.length}
+                                        itemsPerPage={itemsPerPage}
+                                        onPageChange={setAppointmentsPage}
+                                    />
+                                </>
                             )}
                         </CardContent>
                     </Card>

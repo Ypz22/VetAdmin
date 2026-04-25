@@ -82,3 +82,45 @@ export async function changePassword({ newPassword, userId }) {
 
     return { status: "success" };
 }
+
+export async function changePasswordWithCurrent({ currentPassword, newPassword, confirmPassword }) {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error || !data?.user?.email) {
+        throw new Error("No se pudo obtener el usuario actual.");
+    }
+
+    const errores = validarCambioPassword({ newPassword, confirmPassword });
+    if (errores.length > 0) {
+        throw new Error(errores[0]);
+    }
+
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: data.user.email,
+        password: currentPassword,
+    });
+
+    if (loginError) {
+        throw new Error("La contraseña actual no es correcta.");
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+    });
+
+    if (updateError) {
+        throw new Error(updateError.message);
+    }
+
+    return { status: "success" };
+}
+
+export async function logout() {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return { status: "success" };
+}

@@ -22,6 +22,8 @@ import {
 import { Textarea } from "../../components/Textarea.jsx";
 import Button from "../../components/Button";
 import { getSpeciesColor } from "../../utils/randomColor";
+import { useAllDataAppointments } from "../../queries/appointments.queries.js";
+import { APPOINTMENT_TIME_SLOTS, getAvailableAppointmentSlots } from "../../utils/appointmentSlots.js";
 import "./newAppointmentgeneral.css";
 const NewAppointmentGeneral = ({
     newAppointmentOpen,
@@ -42,6 +44,18 @@ const NewAppointmentGeneral = ({
     const species = selectedPatient?.species?.toLowerCase() || "";
     const iconKey = speciesIcons?.[species] || "PawPrint";
     const Icon = Icons?.[iconKey] || Icons.PawPrint;
+    const { data: appointments = [] } = useAllDataAppointments();
+
+    const availableTimeSlots = React.useMemo(
+        () => getAvailableAppointmentSlots(appointments, appointmentForm.date),
+        [appointments, appointmentForm.date]
+    );
+
+    React.useEffect(() => {
+        if (appointmentForm.time && !availableTimeSlots.includes(appointmentForm.time)) {
+            setAppointmentForm((prev) => ({ ...prev, time: "" }));
+        }
+    }, [appointmentForm.time, availableTimeSlots, setAppointmentForm]);
 
     return (
         <Dialog
@@ -170,27 +184,7 @@ const NewAppointmentGeneral = ({
                                     </SelectTrigger>
 
                                     <SelectContent className="newAppointmentSelectContent">
-                                        {[
-                                            "08:00",
-                                            "08:30",
-                                            "09:00",
-                                            "09:30",
-                                            "10:00",
-                                            "10:30",
-                                            "11:00",
-                                            "11:30",
-                                            "12:00",
-                                            "12:30",
-                                            "13:00",
-                                            "13:30",
-                                            "14:00",
-                                            "14:30",
-                                            "15:00",
-                                            "15:30",
-                                            "16:00",
-                                            "16:30",
-                                            "17:00",
-                                        ].map((time) => (
+                                        {(appointmentForm.date ? availableTimeSlots : APPOINTMENT_TIME_SLOTS).map((time) => (
                                             <SelectItem
                                                 key={time}
                                                 value={time}
@@ -200,8 +194,13 @@ const NewAppointmentGeneral = ({
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
-                            </div>
+                                    </Select>
+                                    {appointmentForm.date && availableTimeSlots.length === 0 && (
+                                        <span className="newAppointmentHelperText">
+                                            No hay horarios disponibles para esa fecha.
+                                        </span>
+                                    )}
+                                </div>
                         </div>
 
                         <div className="newAppointmentColumn">
@@ -238,35 +237,11 @@ const NewAppointmentGeneral = ({
                             </div>
 
                             <div className="newAppointmentField">
-                                <Label className="newAppointmentLabel">
-                                    Estado general <span className="newAppointmentRequired">*</span>
-                                </Label>
-
-                                <Select
-                                    value={appointmentForm.status ?? ""}
-                                    onValueChange={(value) =>
-                                        setAppointmentForm({
-                                            ...appointmentForm,
-                                            status: value,
-                                        })
-                                    }
-                                >
-                                    <SelectTrigger className="newAppointmentSelectTrigger">
-                                        <SelectValue placeholder="Estado general" />
-                                    </SelectTrigger>
-
-                                    <SelectContent className="newAppointmentSelectContent">
-                                        <SelectItem value="confirmed" className="newAppointmentSelectItem">
-                                            Confirmada
-                                        </SelectItem>
-                                        <SelectItem value="pending" className="newAppointmentSelectItem">
-                                            Pendiente
-                                        </SelectItem>
-                                        <SelectItem value="cancelled" className="newAppointmentSelectItem">
-                                            Cancelada
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label className="newAppointmentLabel">Estado inicial</Label>
+                                <div className="newAppointmentStaticValue">
+                                    <Badge className="badge pending" label="Pendiente" />
+                                    <span>El propietario recibira un correo para confirmar la cita.</span>
+                                </div>
                             </div>
 
                             <div className="newAppointmentField">
@@ -341,8 +316,7 @@ const NewAppointmentGeneral = ({
                                     !appointmentForm.patient_id?.trim() ||
                                     !appointmentForm.date?.trim() ||
                                     !appointmentForm.time?.trim() ||
-                                    !appointmentForm.services?.trim() ||
-                                    !appointmentForm.status?.trim()
+                                    !appointmentForm.services?.trim()
                                 }
                                 label={
                                     <>

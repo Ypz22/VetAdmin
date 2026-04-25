@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchVeterinaries,
     fetchVeterinaryById,
     fetchVeterinaryByUser,
+    updateVeterinary,
 } from "../api/veterinaries.api.js";
 
 export const veterinariesKeys = {
@@ -31,5 +32,16 @@ export function useVeterinaryByUser() {
     return useQuery({
         queryKey: veterinariesKeys.detail(),
         queryFn: () => fetchVeterinaryByUser(),
+    });
+}
+
+export function useUpdateVeterinary() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateVeterinary,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: veterinariesKeys.all });
+        },
     });
 }

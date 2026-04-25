@@ -42,3 +42,22 @@ export async function fetchVeterinaryByUser() {
 
     return data;
 }
+
+export async function updateVeterinary({ id, name, email, phone, address }) {
+    const updates = {};
+    if (name !== undefined) updates.name = name;
+    if (email !== undefined) updates.email = email;
+    if (phone !== undefined) updates.phone = phone;
+    if (address !== undefined) updates.address = address;
+
+    const { data, error } = await supabase
+        .from("veterinaries")
+        .update(updates)
+        .eq("id", id)
+        .select("*")
+        .single();
+
+    if (error) throw new Error(error.message);
+
+    return data;
+}

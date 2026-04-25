@@ -8,9 +8,11 @@ import { Avatar, AvatarFallback } from "../../../../components/Avatar.jsx";
 import Button from "../../../../components/Button.jsx";
 import { shortId } from "../../../../utils/stringUtils.js";
 import { getInitials } from "../../../../utils/stringUtils.js";
+import PatientHistory from "./PatientHistory.jsx";
 
 
 const PatientDetails = ({ selectedPatient, speciesIcons, setNewAppointmentOpen, setDeleteConfirmOpen, setEditPatientOpen }) => {
+    const [historyOpen, setHistoryOpen] = React.useState(false);
 
     const color = getSpeciesColor(selectedPatient?.species.toLowerCase() || "");
     const species = selectedPatient?.species.toLowerCase() || "";
@@ -119,6 +121,7 @@ const PatientDetails = ({ selectedPatient, speciesIcons, setNewAppointmentOpen, 
                                 <Button
                                     type="button"
                                     className="btn historyPatientButton"
+                                    onClick={() => setHistoryOpen(true)}
                                     label={
                                         "Ver historial completo"
                                     }
@@ -138,6 +141,11 @@ const PatientDetails = ({ selectedPatient, speciesIcons, setNewAppointmentOpen, 
                     </p>
                 </CardContent>
             )}
+            <PatientHistory
+                selectedPatient={selectedPatient}
+                historyOpen={historyOpen}
+                setHistoryOpen={setHistoryOpen}
+            />
         </div>
     );
 };
