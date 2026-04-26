@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Icons } from "../../components/Named-lucide";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/Card";
 import Button from "../../components/Button";
@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback } from "../../components/Avatar";
 import Badge from "../../components/Badget";
 import DashboardHeader from "../../components/DashboardHeader";
 import "./calendar.css";
-import { useAllDataAppointments, useCreateAppointment, useUpdateAppointment } from "../../queries/appointments.queries";
-import { getInitials, toTitleCase } from "../../utils/stringUtils";
+import { useAllDataAppointments, useUpdateAppointment } from "../../queries/appointments.queries";
+import { getInitials } from "../../utils/stringUtils";
 import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
 import { useServices } from "../../queries/services.queries";
 import { usePets } from "../../queries/pets.queries";
@@ -15,6 +15,10 @@ import toast from "react-hot-toast";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/Dialog.jsx";
 import { friendlyError } from "../../utils/friendlyError.js";
 import PaginationControls from "../../components/PaginationControls.jsx";
+import { useDoctors } from "../../hooks/useDoctors.js";
+import { getDoctorNameById } from "../../utils/doctors.js";
+import { SPECIES_ICONS } from "../../constants/species.js";
+import { useAppointmentDialog } from "../../hooks/useAppointmentDialog.js";
 
 
 const DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
@@ -56,52 +60,23 @@ const Calendar = () => {
     const { data: events = [] } = useAllDataAppointments();
     const { data: services = [] } = useServices();
     const { data: patients = [] } = usePets();
-    const createAppointmentMutation = useCreateAppointment();
+    const { doctors } = useDoctors();
     const updateAppointmentMutation = useUpdateAppointment();
-    const [newAppointmentOpen, setNewAppointmentOpen] = useState(false);
-    const [appointmentForm, setAppointmentForm] = useState({});
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [eventsPage, setEventsPage] = useState(1);
-    const emptyAppointmentForm = {};
+    const [doctorFilter, setDoctorFilter] = useState("all");
     const itemsPerPage = 5;
-
-    const handleDialogChangeAppointment = (open) => {
-        setNewAppointmentOpen(open);
-        if (!open) {
-            setAppointmentForm({});
-        }
-    };
-
-    function handleNewAppointmentSubmit() {
-        createAppointmentMutation.mutate({
-            appointment_date: appointmentForm.date,
-            appointment_time: appointmentForm.time,
-            pet_id: appointmentForm.patient_id,
-            service_id: appointmentForm.services,
-            notes: appointmentForm.notes,
-            baseUrl: window.location.origin,
-        }, {
-            onSuccess: ({ appointment, emailSent, emailError }) => {
-                const patientName = appointment?.pets?.name ?? appointmentForm.vet;
-
-                toast.success(
-                    emailSent
-                        ? `Cita para ${toTitleCase(patientName)} creada y enviada al propietario`
-                        : `Cita para ${toTitleCase(patientName)} creada en pendiente`
-                );
-
-                if (!emailSent && emailError) {
-                    toast.error(emailError);
-                }
-
-                setAppointmentForm(emptyAppointmentForm)
-                setNewAppointmentOpen(false)
-            },
-            onError: (error) => {
-                toast.error("Error al crear cita: " + error.message)
-            }
-        })
-    }
+    const {
+        appointmentForm,
+        handleDialogChangeAppointment,
+        handleNewAppointmentSubmit,
+        newAppointmentOpen,
+        setAppointmentForm,
+        setNewAppointmentOpen,
+    } = useAppointmentDialog({
+        resolvePetId: (form) => form.patient_id,
+        resolvePatientName: ({ appointment }) => appointment?.pets?.name,
+    });
 
     function handleAppointmentStatusUpdate(status) {
         if (!selectedAppointment) return;
@@ -127,14 +102,6 @@ const Calendar = () => {
             }
         );
     }
-
-    const speciesIcons = {
-        perro: "Dog",
-        gato: "Cat",
-        ave: "Bird",
-        conejo: "Rabbit",
-    }
-
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const [currentYear] = useState(new Date().getFullYear());
     const [selectedDate, setSelectedDate] = useState(new Date().getDate());
@@ -148,7 +115,8 @@ const Calendar = () => {
         return (
             year === currentYear &&
             month - 1 === currentMonth &&
-            day === selectedDate
+            day === selectedDate &&
+            (doctorFilter === "all" || e.doctor_id === doctorFilter)
         );
     }).sort((a, b) => a.appointment_time.localeCompare(b.appointment_time));
 
@@ -163,7 +131,7 @@ const Calendar = () => {
         events
             .filter((e) => {
                 const [year, month] = e.appointment_date.split("-").map(Number);
-                return year === currentYear && month - 1 === currentMonth;
+                return year === currentYear && month - 1 === currentMonth && (doctorFilter === "all" || e.doctor_id === doctorFilter);
             })
             .map((e) => {
                 const [, , day] = e.appointment_date.split("-").map(Number);
@@ -263,6 +231,21 @@ const Calendar = () => {
                             <CardTitle className="events-card-title">
                                 {selectedDate} de {MONTHS[currentMonth]}
                             </CardTitle>
+                            <select
+                                className="calendarDoctorFilter"
+                                value={doctorFilter}
+                                onChange={(event) => {
+                                    setDoctorFilter(event.target.value);
+                                    setEventsPage(1);
+                                }}
+                            >
+                                <option value="all">Todos los doctores</option>
+                                {doctors.map((doctor) => (
+                                    <option key={doctor.id} value={doctor.id}>
+                                        {doctor.full_name}
+                                    </option>
+                                ))}
+                            </select>
                             <p className="events-count">
                                 {selectedEvents.length === 0 ? (
                                     "Sin citas programadas"
@@ -310,6 +293,7 @@ const Calendar = () => {
                                                             <div className="event-details">
                                                                 <p className="event-pet">{event.pets?.name ?? "Mascota"}</p>
                                                                 <p className="event-owner">{event.pets?.owner_id?.full_name ?? "Propietario"}</p>
+                                                                <p className="event-owner">{getDoctorNameById(doctors, event.doctor_id)}</p>
                                                             </div>
                                                         </div>
                                                         <div className="event-meta">
@@ -341,11 +325,12 @@ const Calendar = () => {
                 setNewAppointmentOpen={setNewAppointmentOpen}
                 appointmentForm={appointmentForm}
                 setAppointmentForm={setAppointmentForm}
-                speciesIcons={speciesIcons}
+                speciesIcons={SPECIES_ICONS}
                 handleDialogChangeAppointment={handleDialogChangeAppointment}
                 handleNewAppointmentSubmit={handleNewAppointmentSubmit}
                 services={services}
                 patients={patients}
+                doctors={doctors}
             />
             <Dialog open={!!selectedAppointment} onOpenChange={(open) => !open && setSelectedAppointment(null)}>
                 {selectedAppointment && (
@@ -398,6 +383,13 @@ const Calendar = () => {
                                     <div>
                                         <span>Servicio</span>
                                         <p>{selectedAppointment.services?.name ?? "Servicio"}</p>
+                                    </div>
+                                </div>
+                                <div className="appointmentDetailsItem">
+                                    <Icons.UserRound className="sizeIcon4" />
+                                    <div>
+                                        <span>Doctor</span>
+                                        <p>{getDoctorNameById(doctors, selectedAppointment.doctor_id)}</p>
                                     </div>
                                 </div>
                                 <div className="appointmentDetailsItem">

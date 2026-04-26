@@ -6,14 +6,18 @@ import Badge from "../../components/Badget";
 import { useMemo, useState } from "react";
 import DashboardHeader from "../../components/DashboardHeader";
 import "./agenda.css";
-import { useAllDataAppointments, useCreateAppointment } from "../../queries/appointments.queries";
+import { useAllDataAppointments } from "../../queries/appointments.queries";
 import { useServices } from "../../queries/services.queries";
 import React from "react";
 import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
 import { usePets } from "../../queries/pets.queries";
-import toast from "react-hot-toast";
-import { toTitleCase } from "../../utils/stringUtils";
 import PaginationControls from "../../components/PaginationControls.jsx";
+import Input from "../../components/Input.jsx";
+import { useSearchParams } from "react-router-dom";
+import { useDoctors } from "../../hooks/useDoctors.js";
+import { getDoctorNameById } from "../../utils/doctors.js";
+import { SPECIES_ICONS } from "../../constants/species.js";
+import { useAppointmentDialog } from "../../hooks/useAppointmentDialog.js";
 
 const STATUS_LABELS = {
     pending: "Pendiente",
@@ -85,60 +89,29 @@ function getInitials(name = "") {
 }
 
 const Agenda = () => {
+    const [searchParams] = useSearchParams();
     const { data: appointments = [] } = useAllDataAppointments();
     const { data: services = [] } = useServices();
     const { data: patients = [] } = usePets();
-    const createAppointmentMutation = useCreateAppointment();
-    const [newAppointmentOpen, setNewAppointmentOpen] = useState(false);
-    const [appointmentForm, setAppointmentForm] = React.useState({});
+    const { doctors } = useDoctors();
     const [appointmentsPage, setAppointmentsPage] = useState(1);
-    const emptyAppointmentForm = {};
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState(searchParams.get("search") ?? "");
+    const [statusFilter, setStatusFilter] = useState(searchParams.get("status") ?? "all");
+    const [serviceFilter, setServiceFilter] = useState(searchParams.get("service") ?? "all");
+    const [doctorFilter, setDoctorFilter] = useState(searchParams.get("doctor") ?? "all");
     const itemsPerPage = 5;
-
-    const handleDialogChangeAppointment = (open) => {
-        setNewAppointmentOpen(open);
-        if (!open) {
-            setAppointmentForm({});
-        }
-    };
-
-    function handleNewAppointmentSubmit() {
-        createAppointmentMutation.mutate({
-            appointment_date: appointmentForm.date,
-            appointment_time: appointmentForm.time,
-            pet_id: appointmentForm.patient_id,
-            service_id: appointmentForm.services,
-            notes: appointmentForm.notes,
-            baseUrl: window.location.origin,
-        }, {
-            onSuccess: ({ appointment, emailSent, emailError }) => {
-                const patientName = appointment?.pets?.name ?? appointmentForm.vet;
-
-                toast.success(
-                    emailSent
-                        ? `Cita para ${toTitleCase(patientName)} creada y enviada al propietario`
-                        : `Cita para ${toTitleCase(patientName)} creada en pendiente`
-                );
-
-                if (!emailSent && emailError) {
-                    toast.error(emailError);
-                }
-
-                setAppointmentForm(emptyAppointmentForm)
-                setNewAppointmentOpen(false)
-            },
-            onError: (error) => {
-                toast.error("Error al crear cita: " + error.message)
-            }
-        })
-    }
-
-    const speciesIcons = {
-        perro: "Dog",
-        gato: "Cat",
-        ave: "Bird",
-        conejo: "Rabbit",
-    }
+    const {
+        appointmentForm,
+        handleDialogChangeAppointment,
+        handleNewAppointmentSubmit,
+        newAppointmentOpen,
+        setAppointmentForm,
+        setNewAppointmentOpen,
+    } = useAppointmentDialog({
+        resolvePetId: (form) => form.patient_id,
+        resolvePatientName: ({ appointment }) => appointment?.pets?.name,
+    });
 
     const weekDates = useMemo(() => {
         const today = new Date();
@@ -156,11 +129,83 @@ const Agenda = () => {
     const currentDate = weekDates[selectedDay];
     const currentDateKey = getDateOnly(currentDate);
 
+    React.useEffect(() => {
+        setSearchTerm(searchParams.get("search") ?? "");
+        setStatusFilter(searchParams.get("status") ?? "all");
+        setServiceFilter(searchParams.get("service") ?? "all");
+        setDoctorFilter(searchParams.get("doctor") ?? "all");
+
+        if (
+            searchParams.get("search") ||
+            searchParams.get("status") ||
+            searchParams.get("service") ||
+            searchParams.get("doctor")
+        ) {
+            setFilterOpen(true);
+        }
+    }, [searchParams]);
+
+    React.useEffect(() => {
+        const appointmentId = searchParams.get("appointmentId");
+        if (!appointmentId || appointments.length === 0) return;
+
+        const appointmentIndex = weekDates.findIndex(
+            (date) => getDateOnly(date) === appointments.find((item) => item.id === appointmentId)?.appointment_date
+        );
+
+        if (appointmentIndex >= 0) {
+            setSelectedDay(appointmentIndex);
+            setAppointmentsPage(1);
+            setExpandedItem(appointmentId);
+            setFilterOpen(true);
+        }
+    }, [appointments, searchParams, weekDates]);
+
     const appointmentsBySelectedDay = useMemo(() => {
+        const normalizedSearch = searchTerm.trim().toLowerCase();
+
         return appointments
             .filter((app) => app.appointment_date === currentDateKey)
+            .filter((app) => {
+                const petName = app.pets?.name?.toLowerCase() ?? "";
+                const ownerName = app.pets?.owner_id?.full_name?.toLowerCase() ?? "";
+                const ownerPhone = app.pets?.owner_id?.phone?.toLowerCase() ?? "";
+                const serviceName = app.services?.name?.toLowerCase() ?? "";
+                const doctorName = getDoctorNameById(doctors, app.doctor_id).toLowerCase();
+                const notes = app.notes?.toLowerCase() ?? "";
+                const appointmentId = app.id?.toLowerCase() ?? "";
+                const status = app.status?.toLowerCase() ?? "";
+
+                const matchesSearch =
+                    normalizedSearch === "" ||
+                    petName.includes(normalizedSearch) ||
+                    ownerName.includes(normalizedSearch) ||
+                    ownerPhone.includes(normalizedSearch) ||
+                    serviceName.includes(normalizedSearch) ||
+                    doctorName.includes(normalizedSearch) ||
+                    notes.includes(normalizedSearch) ||
+                    appointmentId.includes(normalizedSearch) ||
+                    status.includes(normalizedSearch);
+
+                const matchesStatus = statusFilter === "all" || app.status === statusFilter;
+                const matchesService =
+                    serviceFilter === "all" ||
+                    app.services?.name?.toLowerCase() === serviceFilter.toLowerCase();
+                const matchesDoctor =
+                    doctorFilter === "all" ||
+                    app.doctor_id === doctorFilter;
+
+                return matchesSearch && matchesStatus && matchesService && matchesDoctor;
+            })
             .sort((a, b) => a.appointment_time.localeCompare(b.appointment_time));
-    }, [appointments, currentDateKey]);
+    }, [appointments, currentDateKey, searchTerm, statusFilter, serviceFilter, doctorFilter, doctors]);
+
+    React.useEffect(() => {
+        setAppointmentsPage(1);
+        if (!searchParams.get("appointmentId")) {
+            setExpandedItem(null);
+        }
+    }, [searchTerm, statusFilter, serviceFilter, doctorFilter, selectedDay, searchParams]);
 
     const totalPages = Math.max(1, Math.ceil(appointmentsBySelectedDay.length / itemsPerPage));
     const safePage = Math.min(appointmentsPage, totalPages);
@@ -179,6 +224,9 @@ const Agenda = () => {
     const totalCount = appointmentsBySelectedDay.length;
     const confirmedCount = appointmentsBySelectedDay.filter((a) => a.status === "confirmed").length;
     const pendingCount = appointmentsBySelectedDay.filter((a) => a.status === "pending").length;
+    const activeFiltersCount = [searchTerm.trim() !== "", statusFilter !== "all", serviceFilter !== "all", doctorFilter !== "all"]
+        .filter(Boolean)
+        .length;
 
     return (
         <div>
@@ -194,11 +242,14 @@ const Agenda = () => {
                         <Button
                             type="button"
                             className="agendaFilterButton btn"
+                            onClick={() => setFilterOpen((prev) => !prev)}
                             label={
                                 <>
                                     <Icons.Filter className="sizeIcon4" />
-                                    Filtrar
-                                    <Icons.ChevronDown className="icon" />
+                                    {activeFiltersCount > 0
+                                        ? `Filtrar (${activeFiltersCount})`
+                                        : "Filtrar"}
+                                    <Icons.ChevronDown className={`icon ${filterOpen ? "iconOpen" : ""}`} />
                                 </>
                             }
                         />
@@ -215,6 +266,88 @@ const Agenda = () => {
                         />
                     </div>
                 </div>
+
+                {filterOpen && (
+                    <Card className="agendaFiltersPanel">
+                        <CardContent className="agendaFiltersPanelContent">
+                            <div className="agendaFilterField agendaFilterFieldSearch">
+                                <label htmlFor="agenda-search">Buscar</label>
+                                <div className="agendaSearchInputWrapper">
+                                    <Icons.Search className="agendaSearchInputIcon" />
+                                    <Input
+                                        id="agenda-search"
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={(event) => setSearchTerm(event.target.value)}
+                                        className="agendaSearchInput"
+                                        placeholder="Mascota, propietario, servicio o estado"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="agendaFilterField">
+                                <label htmlFor="agenda-status-filter">Estado</label>
+                                <select
+                                    id="agenda-status-filter"
+                                    className="agendaFilterSelect"
+                                    value={statusFilter}
+                                    onChange={(event) => setStatusFilter(event.target.value)}
+                                >
+                                    <option value="all">Todos</option>
+                                    <option value="pending">Pendiente</option>
+                                    <option value="confirmed">Confirmada</option>
+                                    <option value="cancelled">Cancelada</option>
+                                </select>
+                            </div>
+
+                            <div className="agendaFilterField">
+                                <label htmlFor="agenda-service-filter">Servicio</label>
+                                <select
+                                    id="agenda-service-filter"
+                                    className="agendaFilterSelect"
+                                    value={serviceFilter}
+                                    onChange={(event) => setServiceFilter(event.target.value)}
+                                >
+                                    <option value="all">Todos</option>
+                                    {services.map((service) => (
+                                        <option key={service.id} value={service.name}>
+                                            {service.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="agendaFilterField">
+                                <label htmlFor="agenda-doctor-filter">Doctor</label>
+                                <select
+                                    id="agenda-doctor-filter"
+                                    className="agendaFilterSelect"
+                                    value={doctorFilter}
+                                    onChange={(event) => setDoctorFilter(event.target.value)}
+                                >
+                                    <option value="all">Todos</option>
+                                    {doctors.map((doctor) => (
+                                        <option key={doctor.id} value={doctor.id}>
+                                            {doctor.full_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <Button
+                                type="button"
+                                className="agendaFilterResetButton btn"
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    setStatusFilter("all");
+                                    setServiceFilter("all");
+                                    setDoctorFilter("all");
+                                }}
+                                label="Limpiar filtros"
+                            />
+                        </CardContent>
+                    </Card>
+                )}
 
                 <div className="agendaWeekdays">
                     {weekDates.map((date, idx) => {
@@ -306,6 +439,7 @@ const Agenda = () => {
                                             const ownerName = app.pets?.owner_id?.full_name ?? "Propietario";
                                             const ownerPhone = app.pets?.owner_id?.phone ?? "Sin teléfono";
                                             const serviceName = app.services?.name ?? "Servicio";
+                                            const doctorName = getDoctorNameById(doctors, app.doctor_id);
                                             const duration = app.services?.duration_minutes
                                                 ? `${app.services.duration_minutes} min`
                                                 : "Sin duración";
@@ -357,6 +491,11 @@ const Agenda = () => {
                                                                         </div>
 
                                                                         <div className="agendaAppointmentDetailsType">
+                                                                            <Icons.UserRound className="sizeIcon4" />
+                                                                            <span>{doctorName}</span>
+                                                                        </div>
+
+                                                                        <div className="agendaAppointmentDetailsType">
                                                                             <Icons.Phone className="sizeIcon4" />
                                                                             <span>{ownerPhone}</span>
                                                                         </div>
@@ -397,11 +536,12 @@ const Agenda = () => {
                 setNewAppointmentOpen={setNewAppointmentOpen}
                 appointmentForm={appointmentForm}
                 setAppointmentForm={setAppointmentForm}
-                speciesIcons={speciesIcons}
+                speciesIcons={SPECIES_ICONS}
                 handleDialogChangeAppointment={handleDialogChangeAppointment}
                 handleNewAppointmentSubmit={handleNewAppointmentSubmit}
                 services={services}
                 patients={patients}
+                doctors={doctors}
             />
         </div>
     );

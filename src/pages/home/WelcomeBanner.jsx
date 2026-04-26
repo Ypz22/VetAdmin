@@ -1,14 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button.jsx";
 import { Icons } from "../../components/Named-lucide.jsx";
 import { useAuthUser } from "../../queries/auth.queries.js";
 import { useProfileById } from "../../queries/profiles.queries.js";
-import { useAppointments, useCreateAppointment } from "../../queries/appointments.queries.js";
+import { useAppointments } from "../../queries/appointments.queries.js";
 import { useServices } from "../../queries/services.queries.js";
 import { usePets } from "../../queries/pets.queries.js";
-import { toTitleCase } from "../../utils/stringUtils.js";
-import toast from "react-hot-toast";
 import NewAppointmentGeneral from "../newAppointmentGeneral/NewAppointmentGeneral.jsx";
+import { useDoctors } from "../../hooks/useDoctors.js";
+import { SPECIES_ICONS } from "../../constants/species.js";
+import { useAppointmentDialog } from "../../hooks/useAppointmentDialog.js";
 
 
 function filterAppointmentsToday(appointments = []) {
@@ -22,57 +24,21 @@ function filterAppointmentsToday(appointments = []) {
 
 
 const WelcomeBanner = () => {
+    const navigate = useNavigate();
     const { data: services = [] } = useServices();
     const { data: patients = [] } = usePets();
-    const createAppointmentMutation = useCreateAppointment();
-    const [newAppointmentOpen, setNewAppointmentOpen] = React.useState(false);
-    const [appointmentForm, setAppointmentForm] = React.useState({});
-    const emptyAppointmentForm = {};
-
-    const handleDialogChangeAppointment = (open) => {
-        setNewAppointmentOpen(open);
-        if (!open) {
-            setAppointmentForm({});
-        }
-    };
-
-    function handleNewAppointmentSubmit() {
-        createAppointmentMutation.mutate({
-            appointment_date: appointmentForm.date,
-            appointment_time: appointmentForm.time,
-            pet_id: appointmentForm.patient_id,
-            service_id: appointmentForm.services,
-            notes: appointmentForm.notes,
-            baseUrl: window.location.origin,
-        }, {
-            onSuccess: ({ appointment, emailSent, emailError }) => {
-                const patientName = appointment?.pets?.name ?? appointmentForm.vet;
-
-                toast.success(
-                    emailSent
-                        ? `Cita para ${toTitleCase(patientName)} creada y enviada al propietario`
-                        : `Cita para ${toTitleCase(patientName)} creada en pendiente`
-                );
-
-                if (!emailSent && emailError) {
-                    toast.error(emailError);
-                }
-
-                setAppointmentForm(emptyAppointmentForm)
-                setNewAppointmentOpen(false)
-            },
-            onError: (error) => {
-                toast.error("Error al crear cita: " + error.message)
-            }
-        })
-    }
-
-    const speciesIcons = {
-        perro: "Dog",
-        gato: "Cat",
-        ave: "Bird",
-        conejo: "Rabbit",
-    }
+    const { doctors } = useDoctors();
+    const {
+        appointmentForm,
+        handleDialogChangeAppointment,
+        handleNewAppointmentSubmit,
+        newAppointmentOpen,
+        setAppointmentForm,
+        setNewAppointmentOpen,
+    } = useAppointmentDialog({
+        resolvePetId: (form) => form.patient_id,
+        resolvePatientName: ({ appointment }) => appointment?.pets?.name,
+    });
     const auth = useAuthUser();
     const userId = auth.data?.id;
 
@@ -102,6 +68,7 @@ const WelcomeBanner = () => {
                     <Button
                         type="button"
                         className="buttonSearchPatient"
+                        onClick={() => navigate("/register?focusSearch=1")}
                         label={
                             <>
                                 <Icons.Search className="welcomeSearchIcon" /> Buscar paciente
@@ -115,11 +82,12 @@ const WelcomeBanner = () => {
                 setNewAppointmentOpen={setNewAppointmentOpen}
                 appointmentForm={appointmentForm}
                 setAppointmentForm={setAppointmentForm}
-                speciesIcons={speciesIcons}
+                speciesIcons={SPECIES_ICONS}
                 handleDialogChangeAppointment={handleDialogChangeAppointment}
                 handleNewAppointmentSubmit={handleNewAppointmentSubmit}
                 services={services}
                 patients={patients}
+                doctors={doctors}
             />
         </div>
     )

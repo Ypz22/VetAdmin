@@ -74,7 +74,7 @@ export async function fetchAppointmentById(id) {
     return data;
 }
 
-export async function createAppointment({ appointment_date, appointment_time, pet_id, service_id, notes, baseUrl }) {
+export async function createAppointment({ appointment_date, appointment_time, pet_id, service_id, doctor_id, notes, baseUrl }) {
     const user = await getAuthUserOrThrow();
 
     const profile = await fetchProfileById(user.id);
@@ -88,6 +88,7 @@ export async function createAppointment({ appointment_date, appointment_time, pe
             status: "pending",
             pet_id,
             service_id,
+            doctor_id,
             notes,
             veterinary_id: profile.veterinary_id,
         })
@@ -125,13 +126,14 @@ export async function createAppointment({ appointment_date, appointment_time, pe
     return { appointment: data, emailSent, emailError };
 }
 
-export async function updateAppointment({ id, appointment_date, appointment_time, status, pet_id, service_id, notes }) {
+export async function updateAppointment({ id, appointment_date, appointment_time, status, pet_id, service_id, doctor_id, notes }) {
     const updates = {};
     if (appointment_date !== undefined) updates.appointment_date = appointment_date;
     if (appointment_time !== undefined) updates.appointment_time = appointment_time;
     if (status !== undefined) updates.status = status;
     if (pet_id !== undefined) updates.pet_id = pet_id;
     if (service_id !== undefined) updates.service_id = service_id;
+    if (doctor_id !== undefined) updates.doctor_id = doctor_id;
     if (notes !== undefined) updates.notes = notes;
 
     const { data, error } = await supabase

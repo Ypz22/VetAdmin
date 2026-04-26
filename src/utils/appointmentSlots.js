@@ -20,7 +20,7 @@ export const APPOINTMENT_TIME_SLOTS = [
     "17:00",
 ];
 
-export function getAvailableAppointmentSlots(appointments, selectedDate) {
+export function getAvailableAppointmentSlots(appointments, selectedDate, doctorId) {
     if (!selectedDate) return APPOINTMENT_TIME_SLOTS;
 
     const occupiedTimes = new Set(
@@ -28,6 +28,7 @@ export function getAvailableAppointmentSlots(appointments, selectedDate) {
             .filter(
                 (appointment) =>
                     appointment.appointment_date === selectedDate &&
+                    (!doctorId || appointment.doctor_id === doctorId) &&
                     appointment.status !== "cancelled"
             )
             .map((appointment) => appointment.appointment_time?.slice(0, 5))

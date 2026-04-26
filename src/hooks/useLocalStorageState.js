@@ -1,16 +1,18 @@
 import React from "react";
 
 export function useLocalStorageState(key, initialValue) {
+    const initialValueRef = React.useRef(initialValue);
+
     const readValue = React.useCallback(() => {
-        if (typeof window === "undefined") return initialValue;
+        if (typeof window === "undefined") return initialValueRef.current;
 
         try {
             const rawValue = window.localStorage.getItem(key);
-            return rawValue ? JSON.parse(rawValue) : initialValue;
+            return rawValue ? JSON.parse(rawValue) : initialValueRef.current;
         } catch {
-            return initialValue;
+            return initialValueRef.current;
         }
-    }, [initialValue, key]);
+    }, [key]);
 
     const [state, setState] = React.useState(() => {
         return readValue();
@@ -18,7 +20,7 @@ export function useLocalStorageState(key, initialValue) {
 
     React.useEffect(() => {
         setState(readValue());
-    }, [readValue]);
+    }, [key, readValue]);
 
     React.useEffect(() => {
         if (typeof window === "undefined") return;

@@ -4,13 +4,14 @@ import Button from "../../../components/Button";
 import Input from "../../../components/Input";
 import "./registerSearchBar.css";
 
-const RegisterSearchBar = ({ searchQuery, setSearchQuery, speciesFilters, setSpeciesFilter, speciesFilter }) => {
+const RegisterSearchBar = ({ searchQuery, setSearchQuery, speciesFilters, setSpeciesFilter, speciesFilter, inputRef }) => {
 
     return (
         <div className="registerSearchBar">
             <div className="registerSearchBarInputContainer">
                 <Icons.Search className="registerSearchBarIcon" />
                 <Input
+                    ref={inputRef}
                     placeholder="Buscar por nombre, propietario, raza o ID..."
                     className="registerSearchBarInput"
                     value={searchQuery}

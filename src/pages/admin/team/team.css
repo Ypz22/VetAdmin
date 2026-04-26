@@ -12,6 +12,12 @@
     color: var(--black-color);
 }
 
+.team-subtitle {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
 .btn-team {
     background-color: var(--light-taupe);
     color: var(--white-color);
@@ -37,6 +43,16 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+}
+
+.teamReadOnlyNotice {
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--yellow-rgb), 0.28);
+    background-color: rgba(var(--yellow-rgb), 0.12);
+    color: var(--black-color);
+    font-size: 0.875rem;
 }
 
 .teamEditor {
@@ -65,6 +81,20 @@
 .teamInput {
     padding-left: 0.75rem;
     background-color: var(--white-color);
+}
+
+.teamSelect {
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+    color: var(--black-color);
+    padding: 0.75rem;
+}
+
+.teamHelperText {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
 }
 
 .teamEditorActions,
@@ -124,9 +154,14 @@
 .teamMemberStatus {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     font-size: 0.875rem;
     color: var(--text-color-secondary);
     gap: 0.5rem;
+}
+
+.teamMemberEmail {
+    word-break: break-word;
 }
 
 .teamActionButton {
@@ -149,4 +184,54 @@
 .badgeInactive {
     background-color: var(--black-shadows-border);
     color: var(--text-color-secondary);
+}
+
+.badgeWarning {
+    background-color: rgba(var(--yellow-rgb), 0.14);
+    color: var(--yellow);
+    border-color: rgba(var(--yellow-rgb), 0.24);
+}
+
+.teamEmptyState {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    text-align: center;
+    color: var(--text-color-secondary);
+    border: 1px dashed var(--black-shadows-border);
+    border-radius: 12px;
+    background-color: var(--black-shadows);
+}
+
+.teamSpinner {
+    animation: team-spin 1s linear infinite;
+}
+
+@keyframes team-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-header,
+    .teamMember {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .teamEditorGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .teamMemberStatus {
+        justify-content: flex-start;
+    }
 }

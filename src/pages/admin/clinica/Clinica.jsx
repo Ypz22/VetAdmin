@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../components/Ca
 import Button from "../../../components/Button.jsx";
 import Input from "../../../components/Input.jsx";
 import { Label } from "../../../components/Label.jsx";
-import { useUpdateVeterinary, useVeterinaryByUser } from "../../../queries/veterinaries.queries.js";
+import { useUpdateVeterinary } from "../../../queries/veterinaries.queries.js";
 import { useLocalStorageState } from "../../../hooks/useLocalStorageState.js";
 import toast from "react-hot-toast";
 import "./clinica.css";
@@ -24,8 +24,7 @@ const EMPTY_FORM = {
     taxId: "",
 };
 
-const Clinica = () => {
-    const { data: veterinary } = useVeterinaryByUser();
+const Clinica = ({ veterinary }) => {
     const updateVeterinaryMutation = useUpdateVeterinary();
     const [isEditing, setIsEditing] = React.useState(false);
     const [form, setForm] = React.useState(EMPTY_FORM);

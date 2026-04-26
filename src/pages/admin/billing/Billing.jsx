@@ -2,7 +2,6 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/Card";
 import Badge from "../../../components/Badget";
 import Button from "../../../components/Button.jsx";
-import { useVeterinaryByUser } from "../../../queries/veterinaries.queries.js";
 import { useLocalStorageState } from "../../../hooks/useLocalStorageState.js";
 import "./billing.css";
 
@@ -22,8 +21,7 @@ function getNextBillingDate() {
     });
 }
 
-const Billing = () => {
-    const { data: veterinary } = useVeterinaryByUser();
+const Billing = ({ veterinary }) => {
     const storageKey = React.useMemo(
         () => `admin_billing_${veterinary?.id ?? "default"}`,
         [veterinary?.id]

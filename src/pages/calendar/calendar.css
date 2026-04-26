@@ -159,6 +159,15 @@
     color: var(--text-color-secondary);
 }
 
+.calendarDoctorFilter {
+    min-height: 42px;
+    border-radius: 12px;
+    border: 1px solid var(--black-shadows-border);
+    background-color: var(--white-color);
+    color: var(--black-color);
+    padding: 0.65rem 0.9rem;
+}
+
 .events-card-content {
     padding: 0 1.5rem;
     padding-bottom: 1.5rem;

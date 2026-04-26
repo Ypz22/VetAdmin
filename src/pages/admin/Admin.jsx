@@ -8,6 +8,7 @@ import Billing from "./billing/Billing";
 import Notification from "./notification/Notification";
 import Security from "./security/Security";
 import DashboardHeader from "../../components/DashboardHeader";
+import { useVeterinaryByUser } from "../../queries/veterinaries.queries.js";
 import "./admin.css";
 
 const tabs = [
@@ -20,6 +21,7 @@ const tabs = [
 
 const Admin = () => {
     const [activeTab, setActiveTab] = React.useState("clinica");
+    const { data: veterinary } = useVeterinaryByUser();
 
     return (
         <div className="admin">
@@ -56,10 +58,10 @@ const Admin = () => {
                     </Card>
 
                     <div>
-                        {activeTab === "clinica" && <Clinica />}
+                        {activeTab === "clinica" && <Clinica veterinary={veterinary} />}
                         {activeTab === "equipo" && <Team />}
-                        {activeTab === "facturacion" && <Billing />}
-                        {activeTab === "notificaciones" && <Notification />}
+                        {activeTab === "facturacion" && <Billing veterinary={veterinary} />}
+                        {activeTab === "notificaciones" && <Notification veterinary={veterinary} />}
                         {activeTab === "seguridad" && <Security />}
                     </div>
                 </div>

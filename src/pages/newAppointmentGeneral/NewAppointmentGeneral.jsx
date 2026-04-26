@@ -23,7 +23,7 @@ import { Textarea } from "../../components/Textarea.jsx";
 import Button from "../../components/Button";
 import { getSpeciesColor } from "../../utils/randomColor";
 import { useAllDataAppointments } from "../../queries/appointments.queries.js";
-import { APPOINTMENT_TIME_SLOTS, getAvailableAppointmentSlots } from "../../utils/appointmentSlots.js";
+import { useAppointmentAvailability } from "../../hooks/useAppointmentAvailability.js";
 import "./newAppointmentgeneral.css";
 const NewAppointmentGeneral = ({
     newAppointmentOpen,
@@ -35,6 +35,7 @@ const NewAppointmentGeneral = ({
     handleNewAppointmentSubmit,
     services,
     patients = [],
+    doctors = [],
 }) => {
     const selectedPatient = patients.find(
         (patient) => patient.id === appointmentForm.patient_id
@@ -46,16 +47,11 @@ const NewAppointmentGeneral = ({
     const Icon = Icons?.[iconKey] || Icons.PawPrint;
     const { data: appointments = [] } = useAllDataAppointments();
 
-    const availableTimeSlots = React.useMemo(
-        () => getAvailableAppointmentSlots(appointments, appointmentForm.date),
-        [appointments, appointmentForm.date]
-    );
-
-    React.useEffect(() => {
-        if (appointmentForm.time && !availableTimeSlots.includes(appointmentForm.time)) {
-            setAppointmentForm((prev) => ({ ...prev, time: "" }));
-        }
-    }, [appointmentForm.time, availableTimeSlots, setAppointmentForm]);
+    const { availableTimeSlots, fallbackTimeSlots } = useAppointmentAvailability({
+        appointments,
+        appointmentForm,
+        setAppointmentForm,
+    });
 
     return (
         <Dialog
@@ -184,7 +180,7 @@ const NewAppointmentGeneral = ({
                                     </SelectTrigger>
 
                                     <SelectContent className="newAppointmentSelectContent">
-                                        {(appointmentForm.date ? availableTimeSlots : APPOINTMENT_TIME_SLOTS).map((time) => (
+                                        {fallbackTimeSlots.map((time) => (
                                             <SelectItem
                                                 key={time}
                                                 value={time}
@@ -248,11 +244,11 @@ const NewAppointmentGeneral = ({
                                 <Label className="newAppointmentLabel">Veterinario</Label>
 
                                 <Select
-                                    value={appointmentForm.vet ?? ""}
+                                    value={appointmentForm.doctor_id ?? ""}
                                     onValueChange={(value) =>
                                         setAppointmentForm({
                                             ...appointmentForm,
-                                            vet: value,
+                                            doctor_id: value,
                                         })
                                     }
                                 >
@@ -261,18 +257,11 @@ const NewAppointmentGeneral = ({
                                     </SelectTrigger>
 
                                     <SelectContent className="newAppointmentSelectContent">
-                                        <SelectItem value="dra-garcia" className="newAppointmentSelectItem">
-                                            Dra. Garcia
-                                        </SelectItem>
-                                        <SelectItem value="dr-martinez" className="newAppointmentSelectItem">
-                                            Dr. Martinez
-                                        </SelectItem>
-                                        <SelectItem value="dra-fernandez" className="newAppointmentSelectItem">
-                                            Dra. Fernandez
-                                        </SelectItem>
-                                        <SelectItem value="dr-lopez" className="newAppointmentSelectItem">
-                                            Dr. Lopez
-                                        </SelectItem>
+                                        {doctors.map((doctor) => (
+                                            <SelectItem key={doctor.id} value={doctor.id} className="newAppointmentSelectItem">
+                                                {doctor.full_name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -316,7 +305,8 @@ const NewAppointmentGeneral = ({
                                     !appointmentForm.patient_id?.trim() ||
                                     !appointmentForm.date?.trim() ||
                                     !appointmentForm.time?.trim() ||
-                                    !appointmentForm.services?.trim()
+                                    !appointmentForm.services?.trim() ||
+                                    !appointmentForm.doctor_id?.trim()
                                 }
                                 label={
                                     <>

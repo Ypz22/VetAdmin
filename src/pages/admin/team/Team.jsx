@@ -6,198 +6,213 @@ import { Avatar, AvatarFallback } from "../../../components/Avatar";
 import Badge from "../../../components/Badget";
 import Input from "../../../components/Input.jsx";
 import { Label } from "../../../components/Label.jsx";
-import { useVeterinaryByUser } from "../../../queries/veterinaries.queries.js";
-import { useProfiles } from "../../../queries/profiles.queries.js";
-import { useLocalStorageState } from "../../../hooks/useLocalStorageState.js";
+import { useTeamMembers, useCreateTeamMember } from "../../../queries/team.queries.js";
+import { useAuthUser } from "../../../queries/auth.queries.js";
+import { useProfileById } from "../../../queries/profiles.queries.js";
 import { getInitials, toTitleCase } from "../../../utils/stringUtils";
+import { friendlyError } from "../../../utils/friendlyError.js";
 import toast from "react-hot-toast";
 import "./team.css";
 
 const EMPTY_MEMBER = {
-    id: "",
     name: "",
-    role: "",
+    role: "staff",
     email: "",
-    status: "activo",
+    password: "",
+};
+
+const ROLE_LABELS = {
+    owner: "Propietario",
+    staff: "Personal",
+};
+
+const STATUS_LABELS = {
+    active: "Activo",
+    inactive: "Inactivo",
 };
 
 const Team = () => {
-    const { data: veterinary } = useVeterinaryByUser();
-    const { data: profiles = [] } = useProfiles();
-    const storageKey = React.useMemo(
-        () => `admin_team_members_${veterinary?.id ?? "default"}`,
-        [veterinary?.id]
-    );
-    const [customMembers, setCustomMembers] = useLocalStorageState(storageKey, []);
+    const auth = useAuthUser();
+    const userId = auth.data?.id;
+    const profile = useProfileById(userId, { enabled: !!userId });
+    const { data: members = [], isLoading, error } = useTeamMembers();
+    const createTeamMemberMutation = useCreateTeamMember();
     const [isFormOpen, setIsFormOpen] = React.useState(false);
-    const [editingId, setEditingId] = React.useState(null);
     const [form, setForm] = React.useState(EMPTY_MEMBER);
+    const canManageMembers = profile.data?.role === "owner";
 
-    const realMembers = React.useMemo(
-        () =>
-            profiles
-                .filter(
-                    (profile) =>
-                        profile.veterinary_id === veterinary?.id &&
-                        profile.role !== "client"
-                )
-                .map((profile) => ({
-                    id: profile.id,
-                    name: profile.full_name,
-                    role: profile.role === "owner" ? "Propietario" : "Personal",
-                    email: profile.email ?? "Sin correo",
-                    status: "activo",
-                    source: "profile",
-                })),
-        [profiles, veterinary?.id]
-    );
-
-    const members = [...realMembers, ...customMembers];
+    React.useEffect(() => {
+        if (error?.message) {
+            toast.error(friendlyError(error.message));
+        }
+    }, [error]);
 
     const resetForm = () => {
         setForm(EMPTY_MEMBER);
-        setEditingId(null);
         setIsFormOpen(false);
     };
 
-    const handleSubmit = () => {
-        if (!form.name.trim() || !form.role.trim() || !form.email.trim()) {
-            toast.error("Completa nombre, rol y correo.");
+    const handleSubmit = async () => {
+        if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
+            toast.error("Completa nombre, correo y contraseña temporal.");
             return;
         }
 
-        if (editingId) {
-            setCustomMembers((prev) =>
-                prev.map((member) =>
-                    member.id === editingId
-                        ? { ...member, ...form, name: toTitleCase(form.name.trim()) }
-                        : member
-                )
-            );
-            toast.success("Miembro actualizado.");
-        } else {
-            setCustomMembers((prev) => [
-                {
-                    ...form,
-                    id: crypto.randomUUID(),
-                    name: toTitleCase(form.name.trim()),
-                    role: toTitleCase(form.role.trim()),
-                    email: form.email.trim(),
-                    source: "custom",
-                },
-                ...prev,
-            ]);
-            toast.success("Miembro agregado.");
-        }
-
-        resetForm();
-    };
-
-    const handleEdit = (member) => {
-        if (member.source !== "custom") {
-            toast.error("Los miembros reales de la clínica se muestran en solo lectura.");
+        if (!canManageMembers) {
+            toast.error("Solo el propietario puede crear usuarios.");
             return;
         }
 
-        setEditingId(member.id);
-        setForm({
-            id: member.id,
-            name: member.name,
-            role: member.role,
-            email: member.email,
-            status: member.status,
-        });
-        setIsFormOpen(true);
+        try {
+            await createTeamMemberMutation.mutateAsync({
+                full_name: toTitleCase(form.name.trim()),
+                email: form.email.trim().toLowerCase(),
+                password: form.password,
+                role: form.role,
+            });
+
+            toast.success("Empleado creado. Ya puede iniciar sesión con su correo y contraseña temporal.");
+            resetForm();
+        } catch (submitError) {
+            toast.error(friendlyError(submitError?.message));
+        }
     };
 
     return (
         <Card className="team">
             <CardHeader className="team-header">
-                <CardTitle className="team-title">Equipo de trabajo</CardTitle>
+                <div>
+                    <CardTitle className="team-title">Equipo de trabajo</CardTitle>
+                    <p className="team-subtitle">
+                        Crea accesos reales para empleados de tu veterinaria.
+                    </p>
+                </div>
                 <Button
                     type="button"
                     className="btn btn-team"
                     label={
                         <>
                             <Icons.Plus className="icon" />
-                            Agregar miembro
+                            Agregar empleado
                         </>
                     }
                     onClick={() => {
-                        setEditingId(null);
+                        if (!canManageMembers) {
+                            toast.error("Solo el propietario puede crear usuarios.");
+                            return;
+                        }
                         setForm(EMPTY_MEMBER);
                         setIsFormOpen((prev) => !prev);
                     }}
+                    disabled={!canManageMembers}
                 />
             </CardHeader>
             <CardContent className="team-content">
+                {!canManageMembers && (
+                    <div className="teamReadOnlyNotice">
+                        Solo el propietario puede crear usuarios. Como personal, puedes ver el equipo pero no administrar accesos.
+                    </div>
+                )}
+
                 {isFormOpen && (
                     <div className="teamEditor">
                         <div className="teamEditorGrid">
                             <div className="teamEditorField">
-                                <Label>Nombre</Label>
+                                <Label>Nombre completo</Label>
                                 <Input
                                     className="input teamInput"
                                     value={form.name}
                                     onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
                                 />
                             </div>
-                            <div className="teamEditorField">
-                                <Label>Rol</Label>
-                                <Input
-                                    className="input teamInput"
-                                    value={form.role}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, role: event.target.value }))}
-                                />
-                            </div>
+
                             <div className="teamEditorField">
                                 <Label>Correo</Label>
                                 <Input
+                                    type="email"
                                     className="input teamInput"
                                     value={form.email}
                                     onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
                                 />
                             </div>
+
                             <div className="teamEditorField">
-                                <Label>Estado</Label>
+                                <Label>Rol</Label>
+                                <select
+                                    className="teamSelect"
+                                    value={form.role}
+                                    onChange={(event) => setForm((prev) => ({ ...prev, role: event.target.value }))}
+                                >
+                                    <option value="staff">Personal</option>
+                                    <option value="owner">Propietario</option>
+                                </select>
+                            </div>
+
+                            <div className="teamEditorField">
+                                <Label>Contraseña temporal</Label>
                                 <Input
+                                    type="text"
                                     className="input teamInput"
-                                    value={form.status}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value.toLowerCase() }))}
+                                    value={form.password}
+                                    onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
                                 />
                             </div>
                         </div>
+
+                        <p className="teamHelperText">
+                            El empleado iniciará sesión con esta contraseña temporal y luego podrá cambiarla desde el sistema.
+                        </p>
+
                         <div className="teamEditorActions">
                             <Button type="button" className="btn btn-outline" label="Cancelar" onClick={resetForm} />
-                            <Button type="button" className="btn btn-team" label={editingId ? "Guardar cambios" : "Crear miembro"} onClick={handleSubmit} />
+                            <Button
+                                type="button"
+                                className="btn btn-team"
+                                label={createTeamMemberMutation.isPending ? "Creando..." : "Crear usuario"}
+                                onClick={handleSubmit}
+                                disabled={createTeamMemberMutation.isPending}
+                            />
                         </div>
                     </div>
                 )}
 
                 <div className="team-members">
-                    {members.map((member) => (
-                        <div key={member.id} className="teamMember">
-                            <div className="teamMemberInfo">
-                                <Avatar className="teamMemberAvatar">
-                                    <AvatarFallback className="teamMemberFallback">{getInitials(member.name)}</AvatarFallback>
-                                </Avatar>
-                                <div className="teamMemberDetails">
-                                    <p className="name">{member.name}</p>
-                                    <p className="role">{member.role}</p>
+                    {isLoading ? (
+                        <div className="teamEmptyState">
+                            <Icons.LoaderCircle className="sizeIcon5 teamSpinner" />
+                            <p>Cargando equipo...</p>
+                        </div>
+                    ) : members.length === 0 ? (
+                        <div className="teamEmptyState">
+                            <Icons.Users className="sizeIcon6" />
+                            <p>Aún no hay empleados registrados.</p>
+                        </div>
+                    ) : (
+                        members.map((member) => (
+                            <div key={member.id} className="teamMember">
+                                <div className="teamMemberInfo">
+                                    <Avatar className="teamMemberAvatar">
+                                        <AvatarFallback className="teamMemberFallback">{getInitials(member.full_name)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="teamMemberDetails">
+                                        <p className="name">{member.full_name}</p>
+                                        <p className="role">{ROLE_LABELS[member.role] ?? "Usuario"}</p>
+                                    </div>
+                                </div>
+
+                                <div className="teamMemberStatus">
+                                    <span className="teamMemberEmail">{member.email}</span>
+                                    <Badge
+                                        className={`badge ${member.status === "active" ? "badgeActive" : "badgeInactive"}`}
+                                        label={STATUS_LABELS[member.status] ?? "Activo"}
+                                    />
+                                    {member.must_change_password && (
+                                        <Badge className="badge badgeWarning" label="Cambio pendiente" />
+                                    )}
                                 </div>
                             </div>
-                            <div className="teamMemberStatus">
-                                <span>{member.email}</span>
-                                <Badge className={`badge ${member.status === "activo" ? "badgeActive" : "badgeInactive"}`} label={toTitleCase(member.status)} />
-                                {member.source === "custom" && (
-                                    <div className="teamMemberActions">
-                                        <Button type="button" className="btn teamActionButton" label={<Icons.Pencil className="sizeIcon4" />} onClick={() => handleEdit(member)} />
-                                        <Button type="button" className="btn teamActionButton teamActionDanger" label={<Icons.Trash2 className="sizeIcon4" />} onClick={() => setCustomMembers((prev) => prev.filter((item) => item.id !== member.id))} />
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </CardContent>
         </Card>

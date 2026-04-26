@@ -37,22 +37,11 @@
     color: var(--black-color);
 }
 
-.statsCardChangeSpan {
+.statsCardHelper {
     margin-top: .5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: .25rem;
-    border-radius: 999px;
-    padding: .125rem .5rem;
+    display: inline-block;
     font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--green-color);
-    background-color: var(--light-green-color);
-}
-
-.statsCardChangeIcon {
-    height: 0.75rem;
-    width: 0.75rem;
+    color: var(--text-color-secondary);
 }
 
 .statsCardIconWrapper {

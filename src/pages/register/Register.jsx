@@ -1,5 +1,5 @@
 import React from "react";
-import { Icons } from "../../components/Named-lucide";
+import { useSearchParams } from "react-router-dom";
 import RegisterHeader from "./header/RegisterHeader";
 import DashboardHeader from "../../components/DashboardHeader";
 import RegisterSearchBar from "./searchBar/RegisterSearchBar";
@@ -8,11 +8,13 @@ import { useCreatePet, usePetsAndOwner } from "../../queries/pets.queries";
 import toast from "react-hot-toast";
 import { useCreateClient } from "../../queries/clients.queries";
 import { toCapitalizeCase } from "../../utils/stringUtils.js";
-import { useCreateAppointment } from "../../queries/appointments.queries";
 import { useServices } from "../../queries/services.queries";
 import { toTitleCase } from "../../utils/stringUtils";
 import NewPatient from "./newPatient/NewPatient.jsx";
 import NewAppointment from "./newAppointment/NewAppointment.jsx";
+import { useDoctors } from "../../hooks/useDoctors.js";
+import { SPECIES_ICONS } from "../../constants/species.js";
+import { useAppointmentDialog } from "../../hooks/useAppointmentDialog.js";
 
 const speciesFilters = [
     { label: "Todos", value: "todos" },
@@ -22,32 +24,35 @@ const speciesFilters = [
     { label: "Conejos", value: "conejo" },
 ]
 
-const speciesIcons = {
-    perro: "Dog",
-    gato: "Cat",
-    ave: "Bird",
-    conejo: "Rabbit",
-}
-
 const Register = () => {
+    const [searchParams] = useSearchParams();
 
     const { data: patients = [] } = usePetsAndOwner();
     const { data: services = [] } = useServices();
+    const { doctors } = useDoctors();
     const createPetMutation = useCreatePet();
     const createClientMutation = useCreateClient();
-    const createAppointmentMutation = useCreateAppointment();
 
-    const [searchQuery, setSearchQuery] = React.useState("")
-    const [speciesFilter, setSpeciesFilter] = React.useState("todos")
+    const [searchQuery, setSearchQuery] = React.useState(searchParams.get("search") ?? "")
+    const [speciesFilter, setSpeciesFilter] = React.useState(searchParams.get("species") ?? "todos")
     const [selectedPatient, setSelectedPatient] = React.useState(null)
+    const searchInputRef = React.useRef(null);
 
     const [newPatientOpen, setNewPatientOpen] = React.useState(false)
-    const [newAppointmentOpen, setNewAppointmentOpen] = React.useState(false)
     const [editPatientOpen, setEditPatientOpen] = React.useState(false)
     const [patientForm, setPatientForm] = React.useState({})
-    const [appointmentForm, setAppointmentForm] = React.useState({})
     const emptyPatientForm = {};
-    const emptyAppointmentForm = {};
+    const {
+        appointmentForm,
+        handleDialogChangeAppointment,
+        handleNewAppointmentSubmit,
+        newAppointmentOpen: appointmentDialogOpen,
+        setAppointmentForm,
+        setNewAppointmentOpen: setAppointmentDialogOpen,
+    } = useAppointmentDialog({
+        resolvePetId: () => selectedPatient?.id,
+        resolvePatientName: () => selectedPatient?.name,
+    });
 
     function handleNewPatientSubmit() {
         createClientMutation.mutate({
@@ -85,35 +90,6 @@ const Register = () => {
         setNewPatientOpen(false)
     }
 
-    function handleNewAppointmentSubmit() {
-        createAppointmentMutation.mutate({
-            appointment_date: appointmentForm.date,
-            appointment_time: appointmentForm.time,
-            pet_id: selectedPatient.id,
-            service_id: appointmentForm.services,
-            notes: appointmentForm.notes,
-            baseUrl: window.location.origin,
-        }, {
-            onSuccess: ({ emailSent, emailError }) => {
-                toast.success(
-                    emailSent
-                        ? `Cita para ${toTitleCase(selectedPatient.name)} creada y enviada al propietario`
-                        : `Cita para ${toTitleCase(selectedPatient.name)} creada en pendiente`
-                );
-
-                if (!emailSent && emailError) {
-                    toast.error(emailError);
-                }
-
-                setAppointmentForm(emptyAppointmentForm)
-                setNewAppointmentOpen(false)
-            },
-            onError: (error) => {
-                toast.error("Error al crear cita: " + error.message)
-            }
-        })
-    }
-
     const handleDialogChangePatient = (open) => {
         setNewPatientOpen(open);
         setEditPatientOpen(open);
@@ -122,12 +98,26 @@ const Register = () => {
         }
     };
 
-    const handleDialogChangeAppointment = (open) => {
-        setNewAppointmentOpen(open);
-        if (!open) {
-            setAppointmentForm({});
+    React.useEffect(() => {
+        setSearchQuery(searchParams.get("search") ?? "");
+        setSpeciesFilter(searchParams.get("species") ?? "todos");
+    }, [searchParams]);
+
+    React.useEffect(() => {
+        const patientId = searchParams.get("patientId");
+        const focusSearch = searchParams.get("focusSearch");
+
+        if (focusSearch === "1") {
+            searchInputRef.current?.focus();
         }
-    };
+
+        if (!patientId) return;
+
+        const patient = patients.find((item) => item.id === patientId);
+        if (patient) {
+            setSelectedPatient(patient);
+        }
+    }, [patients, searchParams]);
 
 
     const filtered = patients.filter((p) => {
@@ -147,13 +137,13 @@ const Register = () => {
             <div className="page-content">
                 <RegisterHeader patients={patients} setNewPatientOpen={setNewPatientOpen} />
 
-                <RegisterSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} speciesFilters={speciesFilters} setSpeciesFilter={setSpeciesFilter} speciesFilter={speciesFilter} setNewPatientOpen={setNewPatientOpen} />
+                <RegisterSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} speciesFilters={speciesFilters} setSpeciesFilter={setSpeciesFilter} speciesFilter={speciesFilter} setNewPatientOpen={setNewPatientOpen} inputRef={searchInputRef} />
 
-                <PatientList patients={filtered} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} filtered={filtered} setNewAppointmentOpen={setNewAppointmentOpen} setNewPatientOpen={setNewPatientOpen} setEditPatientOpen={setEditPatientOpen} />
+                <PatientList patients={filtered} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} filtered={filtered} setNewAppointmentOpen={setAppointmentDialogOpen} setNewPatientOpen={setNewPatientOpen} setEditPatientOpen={setEditPatientOpen} />
 
                 <NewPatient patientForm={patientForm} setPatientForm={setPatientForm} handleNewPatientSubmit={handleNewPatientSubmit} newPatientOpen={newPatientOpen} setNewPatientOpen={setNewPatientOpen} handleDialogChangePatient={handleDialogChangePatient} selectedPatient={selectedPatient} editPatientOpen={editPatientOpen} setEditPatientOpen={setEditPatientOpen} setSelectedPatient={setSelectedPatient} />
 
-                <NewAppointment newAppointmentOpen={newAppointmentOpen} setNewAppointmentOpen={setNewAppointmentOpen} selectedPatient={selectedPatient} appointmentForm={appointmentForm} setAppointmentForm={setAppointmentForm} speciesIcons={speciesIcons} handleDialogChangeAppointment={handleDialogChangeAppointment} handleNewAppointmentSubmit={handleNewAppointmentSubmit} services={services} />
+                <NewAppointment newAppointmentOpen={appointmentDialogOpen} setNewAppointmentOpen={setAppointmentDialogOpen} selectedPatient={selectedPatient} appointmentForm={appointmentForm} setAppointmentForm={setAppointmentForm} speciesIcons={SPECIES_ICONS} handleDialogChangeAppointment={handleDialogChangeAppointment} handleNewAppointmentSubmit={handleNewAppointmentSubmit} services={services} doctors={doctors} />
             </div>
         </div>
     );

@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/Card";
 import Switch from "../../../components/Switch.jsx";
-import { useVeterinaryByUser } from "../../../queries/veterinaries.queries.js";
 import { useLocalStorageState } from "../../../hooks/useLocalStorageState.js";
 import "./notification.css";
 
@@ -14,8 +13,7 @@ const DEFAULT_NOTIFICATIONS = [
     { id: "daily_summary", title: "Resumen diario", description: "Enviar un resumen de actividad al final del dia", enabled: false },
 ];
 
-const Notification = () => {
-    const { data: veterinary } = useVeterinaryByUser();
+const Notification = ({ veterinary }) => {
     const storageKey = React.useMemo(
         () => `admin_notifications_${veterinary?.id ?? "default"}`,
         [veterinary?.id]

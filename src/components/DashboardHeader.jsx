@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Icons } from "./Named-lucide.jsx";
 import Button from "./Button.jsx";
 import Input from "./Input.jsx";
@@ -13,6 +14,7 @@ const TYPE_LABEL = {
 };
 
 const DashboardHeader = () => {
+    const navigate = useNavigate();
     const { data: appointmentsCount = 0 } = useAppointmentsCount();
 
     const [search, setSearch] = React.useState("");
@@ -43,6 +45,30 @@ const DashboardHeader = () => {
 
     const t = (debouncedSearch ?? "").trim();
     const showDropdown = open && t.length >= 2;
+
+    function handleResultClick(item) {
+        const params = new URLSearchParams();
+
+        if (item.type === "pets") {
+            params.set("patientId", item.id);
+            params.set("search", item.label ?? "");
+            navigate(`/register?${params.toString()}`);
+        }
+
+        if (item.type === "appointments") {
+            params.set("appointmentId", item.id);
+            params.set("search", item.label ?? "");
+            navigate(`/agenda?${params.toString()}`);
+        }
+
+        if (item.type === "services") {
+            params.set("service", item.label ?? "");
+            navigate(`/agenda?${params.toString()}`);
+        }
+
+        setSearch("");
+        setOpen(false);
+    }
 
     return (
         <header className="homeDashboardHeader">
@@ -88,7 +114,7 @@ const DashboardHeader = () => {
                                         key={`${item.type}-${item.id}`}
                                         className="searchItem"
                                         onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => setOpen(false)}
+                                        onClick={() => handleResultClick(item)}
                                     >
                                         <div className="searchItemMain">
                                             <span className="searchItemLabel">{item.label}</span>
